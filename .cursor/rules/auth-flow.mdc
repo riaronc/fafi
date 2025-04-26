@@ -1,0 +1,78 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Authentication Flow
+
+The app implements email and password authentication with a secure flow.
+
+## Authentication Process
+
+### User Registration
+1. User navigates to `/auth/register`
+2. User fills in email, password, and name
+3. System validates the form (email format, password strength)
+4. System checks if email is already registered
+5. If validation passes, the system:
+   - Creates a new user record with hashed password
+   - Sends a verification email (optional)
+   - Redirects to login page with success message
+
+### User Login
+1. User navigates to `/auth/login`
+2. User enters email and password
+3. System validates credentials against database
+4. If valid:
+   - Creates a session
+   - Sets authentication cookies
+   - Redirects to dashboard
+5. If invalid:
+   - Shows error message
+   - Allows retry
+
+### Password Reset
+1. User clicks "Forgot Password" on login page
+2. User enters email address
+3. System sends password reset link to email
+4. User clicks link in email
+5. User sets new password
+6. System updates password hash in database
+7. User is redirected to login
+
+### Session Management
+- Sessions expire after inactivity period
+- "Remember me" feature extends session duration
+- Multiple devices supported
+
+### Logout
+1. User clicks logout button
+2. System invalidates the session
+3. User is redirected to login page
+
+## Authentication Implementation
+
+### Client-Side Auth Components
+- `AuthProvider` context for global auth state
+- `useAuth` hook for accessing auth functionality
+- Protected route wrappers
+
+### Server-Side Auth
+- Authentication middleware for API routes
+- Session validation on server-side rendering
+- CSRF protection for forms
+
+### Database Schema for Auth
+- User table with hashed passwords
+- Session table for active sessions
+- Password reset tokens table
+
+## Security Measures
+- Passwords stored using bcrypt
+- HTTPS for all connections
+- Rate limiting for login attempts
+- Input validation and sanitization
+- Protection against common vulnerabilities:
+  - SQL injection
+  - XSS attacks
+  - CSRF attacks

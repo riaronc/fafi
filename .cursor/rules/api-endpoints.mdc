@@ -1,0 +1,167 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# API Endpoints
+
+The app uses a combination of Next.js API routes and React Server Actions for data operations.
+
+## Authentication API
+
+### `/api/auth/register`
+- Method: POST
+- Description: Register a new user
+- Request body: { email, password, name }
+- Response: { success, user }
+
+### `/api/auth/login`
+- Method: POST
+- Description: Log in an existing user
+- Request body: { email, password }
+- Response: { success, token, user }
+
+### `/api/auth/logout`
+- Method: POST
+- Description: Log out current user
+- Response: { success }
+
+## User API
+
+### `/api/user`
+- Method: GET
+- Description: Get current user information
+- Response: { user }
+
+### `/api/user`
+- Method: PUT
+- Description: Update user information
+- Request body: { name, email, ... }
+- Response: { success, user }
+
+## Accounts API
+
+### `/api/accounts`
+- Method: GET
+- Description: Get all accounts for current user
+- Query params: sort, filter, page, limit
+- Response: { accounts, total, page, limit }
+
+### `/api/accounts/:id`
+- Method: GET
+- Description: Get a specific account
+- Response: { account }
+
+### `/api/accounts`
+- Method: POST
+- Description: Create a new account
+- Request body: { name, type, balance, currency }
+- Response: { success, account }
+
+### `/api/accounts/:id`
+- Method: PUT
+- Description: Update an account
+- Request body: { name, type, balance, currency }
+- Response: { success, account }
+
+### `/api/accounts/:id`
+- Method: DELETE
+- Description: Delete an account
+- Response: { success }
+
+## Transactions API
+
+### `/api/transactions`
+- Method: GET
+- Description: Get all transactions for current user
+- Query params: sort, filter, page, limit, accountId, categoryId, startDate, endDate
+- Response: { transactions, total, page, limit }
+
+### `/api/transactions/:id`
+- Method: GET
+- Description: Get a specific transaction
+- Response: { transaction }
+
+### `/api/transactions`
+- Method: POST
+- Description: Create a new transaction
+- Request body: { amount, description, date, type, accountId, categoryId }
+- Response: { success, transaction }
+
+### `/api/transactions/:id`
+- Method: PUT
+- Description: Update a transaction
+- Request body: { amount, description, date, type, accountId, categoryId }
+- Response: { success, transaction }
+
+### `/api/transactions/:id`
+- Method: DELETE
+- Description: Delete a transaction
+- Response: { success }
+
+## Categories API
+
+### `/api/categories`
+- Method: GET
+- Description: Get all categories for current user
+- Query params: sort, filter, type
+- Response: { categories }
+
+### `/api/categories/:id`
+- Method: GET
+- Description: Get a specific category
+- Response: { category }
+
+### `/api/categories`
+- Method: POST
+- Description: Create a new category
+- Request body: { name, type, color, icon }
+- Response: { success, category }
+
+### `/api/categories/:id`
+- Method: PUT
+- Description: Update a category
+- Request body: { name, type, color, icon }
+- Response: { success, category }
+
+### `/api/categories/:id`
+- Method: DELETE
+- Description: Delete a category
+- Response: { success }
+
+## Budgets API
+
+### `/api/budgets`
+- Method: GET
+- Description: Get all budgets for current user
+- Query params: sort, filter, period
+- Response: { budgets }
+
+### `/api/budgets/:id`
+- Method: GET
+- Description: Get a specific budget
+- Response: { budget }
+
+### `/api/budgets`
+- Method: POST
+- Description: Create a new budget
+- Request body: { name, amount, period, startDate, endDate, categoryId }
+- Response: { success, budget }
+
+### `/api/budgets/:id`
+- Method: PUT
+- Description: Update a budget
+- Request body: { name, amount, period, startDate, endDate, categoryId }
+- Response: { success, budget }
+
+### `/api/budgets/:id`
+- Method: DELETE
+- Description: Delete a budget
+- Response: { success }
+
+## Dashboard API
+
+### `/api/dashboard`
+- Method: GET
+- Description: Get dashboard data
+- Response: { overview, recentTransactions, accountBalances }

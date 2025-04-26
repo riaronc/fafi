@@ -1,0 +1,81 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Database Architecture
+
+The financial management app uses SQLite3 with Prisma ORM for data persistence.
+
+## Database Schema
+
+### User
+- id: UUID (primary key)
+- email: String (unique)
+- password: String (hashed)
+- name: String
+- createdAt: DateTime
+- updatedAt: DateTime
+- monobankToken: String  
+- accounts: Account[] (relation)
+- transactions: Transaction[] (relation)
+- categories: Category[] (relation)
+- budgets: Budget[] (relation)
+
+### Account
+- id: UUID (primary key)
+- name: String
+- type: Enum (Checking, Savings, Credit, Investment, Cash)
+- balance: Decimal
+- currency: String
+- userId: UUID (foreign key)
+- user: User (relation)
+- transactions: Transaction[] (relation)
+- createdAt: DateTime
+- updatedAt: DateTime
+
+### Transaction
+- id: UUID (primary key)
+- sourceAmount: Decimal
+- destinationAmount : Decimal
+- description: String
+- date: DateTime
+- type: Enum (Income, Expense, Transfer)
+- sourceAccountID: UUID (foreign key)
+- destinationAccountId
+- account: Account (relation)
+- categoryId: UUID (foreign key)
+- category: Category (relation)
+- userId: UUID (foreign key)
+- user: User (relation)
+- createdAt: DateTime
+- updatedAt: DateTime
+
+### Category
+- id: UUID (primary key)
+- name: String
+- type: Enum (Income, Expense)
+- bgColor: String
+- fgColor: String
+- icon: String
+- userId: UUID (foreign key)
+- user: User (relation)
+- transactions: Transaction[] (relation)
+- budgets: Budget[] (relation)
+- createdAt: DateTime
+- updatedAt: DateTime
+
+### Budget
+- id: UUID (primary key)
+- name: String
+- plannedAmount: Decimal
+- actualAmount: Decimal
+- period: Enum (Daily, Weekly, Monthly, Yearly)
+- startDate: DateTime
+- endDate: DateTime
+- categoryId: UUID (foreign key)
+- category: Category (relation)
+- userId: UUID (foreign key)
+- user: User (relation)
+- createdAt: DateTime
+- updatedAt: DateTime

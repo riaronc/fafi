@@ -1,0 +1,101 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Deployment Strategy
+
+This financial management app is designed for efficient deployment with separation of environments.
+
+## Development Environment
+
+### Local Development
+- Next.js development server (`next dev`)
+- SQLite3 database for development
+- Prisma client auto-generation
+- Environment variables in `.env.local`
+- Hot reloading enabled
+
+### Development Workflow
+1. Clone repository
+2. Install dependencies (`npm install` or `yarn`)
+3. Set up environment variables
+4. Run database migrations (`npx prisma migrate dev`)
+5. Seed database with test data (`npx prisma db seed`)
+6. Start development server (`npm run dev` or `yarn dev`)
+
+## Testing Environment
+
+### Testing Setup
+- Jest for unit testing
+- React Testing Library for component testing
+- Cypress for end-to-end testing
+- In-memory SQLite database for tests
+- GitHub Actions for CI/CD
+
+### Testing Commands
+- `npm run test` - Run unit and integration tests
+- `npm run test:e2e` - Run end-to-end tests
+- `npm run test:coverage` - Generate coverage report
+
+## Staging Environment
+
+### Staging Configuration
+- Deployed to Vercel preview environment
+- SQLite3 or PostgreSQL database
+- Environment variables in Vercel project
+- Automatic deployments from `staging` branch
+
+## Production Environment
+
+### Production Configuration
+- Deployed to Vercel production environment
+- PostgreSQL database
+- Environment variables in Vercel project
+- Automatic deployments from `main` branch
+
+### Deployment Process
+1. Push code to `main` branch
+2. GitHub Actions run tests
+3. If tests pass, deploy to Vercel
+4. Run database migrations
+5. Zero-downtime deployment
+
+## Database Strategy
+
+### Development
+- SQLite3 database for simplicity
+- Migration scripts for schema changes
+- Seed data for testing
+
+### Production
+- PostgreSQL database for scalability
+- Connection pooling
+- Automated backups
+- Migration scripts for schema changes
+
+## Environment Variables
+
+### Required Variables
+- `DATABASE_URL` - Database connection string
+- `NEXTAUTH_SECRET` - Auth encryption key
+- `NEXTAUTH_URL` - Auth callback URL
+- `NODE_ENV` - Environment (development, test, production)
+
+### Optional Variables
+- `EMAIL_SERVER` - SMTP server for emails
+- `EMAIL_FROM` - Sender email address
+- `ANALYTICS_ID` - Analytics tracking ID
+
+## Monitoring and Logging
+
+### Production Monitoring
+- Vercel Analytics for performance monitoring
+- Error tracking with Sentry
+- Custom logging middleware
+- Health check endpoints
+
+### Performance Monitoring
+- Web Vitals tracking
+- API response time monitoring
+- Database query performance tracking

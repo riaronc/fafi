@@ -1,0 +1,62 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Application Architecture
+
+The app follows the MVVM (Model-View-ViewModel) architecture pattern.
+
+## Model
+Database entities and data access layer:
+- Located in `/prisma` (schema) and `/lib/db` (data access)
+- Interfaces for all entities in `/lib/types`
+- Data validation and transformation in `/lib/schemas`
+
+## View
+UI components and pages:
+- Pages in `/app` directory (Next.js App Router)
+- Reusable UI components in `/components`
+- Form components in `/components/forms`
+- Shadcn UI components used throughout
+
+## ViewModel
+Business logic and state management:
+- API routes in `/api` for data operations
+- React Server Actions for server-side mutations
+- Hooks and context providers in `/lib/hooks` and `/lib/context`
+- State management utilities in `/lib/state`
+
+## Key Features
+1. **Authentication**
+   - Email/password based auth
+   - Protected routes
+   - Auth context and hooks
+
+2. **Dashboard**
+   - Financial overview
+   - Charts and graphs
+   - Recent transactions
+   - Account balances
+
+3. **Transactions**
+   - List, filter, and search
+   - Add, edit, delete operations
+   - Categorization 
+   - Import/export functionality
+
+4. **Accounts**
+   - Account management
+   - Balance tracking
+   - Account types and categories
+
+5. **Categories**
+   - Custom categories with icons
+   - Income and expense types
+   - Category management
+
+6. **Budgets**
+   - Budget creation and tracking
+   - Time period settings
+   - Visual progress indicators
+   - Category-based budgeting

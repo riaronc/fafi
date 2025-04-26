@@ -1,0 +1,168 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Pages and Functionality
+
+The financial management app consists of multiple pages with specific functionalities. All pages are implemented using Next.js App Router and React Server Components where possible.
+
+## Authentication Pages
+
+### `/auth/login` - Login Page
+- Email and password login form
+- "Remember me" option
+- Password reset link
+- Registration link
+- Form validation
+- Error handling
+
+### `/auth/register` - Registration Page
+- User registration form (email, password, name)
+- Terms of service acceptance
+- Password strength requirements
+- Form validation
+- Error handling
+
+### `/auth/forgot-password` - Password Reset Page
+- Email input for password reset
+- Email verification
+- Success/error messaging
+
+## Main Application Pages
+
+### `/dashboard` - Dashboard/Overview Page
+- Financial summary cards (total income, expenses, balance)
+- Monthly income vs. expense chart
+- Expense distribution by category (pie chart)
+- Recent transactions list (last 5-10 transactions)
+- Account balances list
+- Budget progress indicators
+- Date range selector
+
+### `/transactions` - Transactions Page
+- Transactions data table with pagination
+- Search and filter functionality (by date, category, account, amount)
+- Sorting options (date, amount, category)
+- "Add Transaction" button
+- Edit and delete actions for each transaction
+- Export transactions functionality (CSV, PDF)
+- Date range selector
+
+### `/transactions/new` - Add Transaction Page
+- Transaction creation form
+- Amount input with currency selection
+- Date picker
+- Description field
+- Category selection with icons
+- Account selection
+- Transaction type selection (Income/Expense/Transfer)
+- Save and cancel buttons
+
+### `/transactions/[id]` - Edit Transaction Page
+- Pre-filled transaction edit form
+- Same fields as the add transaction form
+- Delete transaction option
+- Save and cancel buttons
+
+### `/accounts` - Accounts Page
+- Accounts list with current balances
+- Account types visual indicators
+- "Add Account" button
+- View, edit, and delete actions for each account
+- Total balance summary
+- Account balance history chart
+
+### `/accounts/new` - Add Account Page
+- Account creation form
+- Name input
+- Type selection (Checking, Savings, Credit, Investment, Cash)
+- Initial balance input with currency selection
+- Save and cancel buttons
+
+### `/accounts/[id]` - Edit Account Page
+- Pre-filled account edit form
+- Same fields as the add account form
+- Delete account option
+- Transaction history for the account
+- Save and cancel buttons
+
+### `/categories` - Categories Page
+- Categories grid with icons and colors
+- Category types (Income/Expense) filtering
+- "Add Category" button
+- Edit and delete actions for each category
+- Usage statistics for each category
+
+### `/categories/new` - Add Category Page
+- Category creation form
+- Name input
+- Type selection (Income/Expense)
+- Color picker
+- Icon selector
+- Save and cancel buttons
+
+### `/categories/[id]` - Edit Category Page
+- Pre-filled category edit form
+- Same fields as the add category form
+- Delete category option
+- Transactions in this category
+- Save and cancel buttons
+
+### `/budgets` - Budgets Page
+- Budget cards with progress indicators
+- Filter by time period (current, past, future)
+- "Add Budget" button
+- Edit and delete actions for each budget
+- Budget vs. actual spending comparison
+- Alerts for over-budget categories
+
+### `/budgets/new` - Add Budget Page
+- Budget creation form
+- Name input
+- Amount input with currency selection
+- Period selection (Daily, Weekly, Monthly, Yearly)
+- Start and end date pickers
+- Category selection
+- Save and cancel buttons
+
+### `/budgets/[id]` - Edit Budget Page
+- Pre-filled budget edit form
+- Same fields as the add budget form
+- Delete budget option
+- Budget history chart
+- Transactions contributing to this budget
+- Save and cancel buttons
+
+## Additional Pages
+
+### `/settings` - Settings Page
+- User profile settings
+- Password change
+- Notification preferences
+- Currency settings
+- Theme settings (light/dark mode)
+- Data export options
+
+### `/profile` - User Profile Page
+- User information display and edit
+- Profile picture upload
+- Security settings
+- Connected accounts
+
+### `/reports` - Financial Reports Page
+- Income statement report
+- Expense by category report
+- Monthly trend reports
+- Custom date range reports
+- Export reports to PDF/CSV
+
+## Error Pages
+
+### `/404` - Not Found Page
+- Custom 404 error page
+- Link back to dashboard
+
+### `/500` - Server Error Page
+- Custom 500 error page
+- Error reporting option

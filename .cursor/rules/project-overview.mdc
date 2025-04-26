@@ -1,0 +1,32 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Financial Management App
+
+A modern financial management application built with Next.js 15, React 19, TypeScript, and Shadcn UI components.
+
+## Key Features
+- Dashboard with financial overview
+- Transaction management 
+- Account tracking
+- Category organization
+- Budget planning
+- Email and password authentication
+
+## Tech Stack
+- React 19 with Server Components
+- Next.js 15 App Router
+- TypeScript
+- Shadcn UI components
+- SQLite3 database with Prisma ORM
+- MVVM architecture
+
+## Project Structure
+- `/app`: Next.js app router pages and layouts
+- `/components`: Reusable UI components
+- `/lib`: Utility functions, types, and database client
+- `/api`: API route handlers
+- `/prisma`: Database schema and migrations
+- `/public`: Static assets

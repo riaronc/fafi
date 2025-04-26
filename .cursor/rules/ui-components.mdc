@@ -1,0 +1,105 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# UI Components
+
+The app uses Shadcn UI components with custom styling and extensions.
+
+## Layout Components
+
+### MainLayout
+- Sidebar navigation (shadcn)
+- Header with user profile
+- Responsive design
+
+### Sidebar
+- Navigation links to main sections
+- Collapsible on mobile
+- User info section
+- Logout functionality
+
+## Page Components
+
+### Dashboard
+- Summary cards
+- Expense distribution chart
+- Income vs Expense chart
+- Recent transactions list
+- Account balances list
+
+### TransactionsPage
+- Transactions table with sorting/filtering
+- Search functionality
+- Pagination
+- Transaction creation/editing forms
+- Transaction deletion confirmation
+
+### AccountsPage
+- Accounts list with balances
+- Account creation/editing forms
+- Account deletion confirmation
+- Account balance history chart
+
+### CategoriesPage
+- Categories grid with icons and colors
+- Category creation/editing forms
+- Category deletion confirmation
+- Usage statistics per category
+
+### BudgetsPage
+- Budget progress cards
+- Budget creation/editing forms
+- Budget deletion confirmation
+- Budget vs actual spending chart
+
+## Form Components
+
+### TransactionForm
+- Amount input with currency
+- Description input
+- Date picker
+- Category selector
+- Account selector
+- Type selector (Income/Expense/Transfer)
+
+### AccountForm
+- Name input
+- Type selector (Checking/Savings/Credit/etc.)
+- Balance input with currency
+- Currency selector
+
+### CategoryForm
+- Name input
+- Type selector (Income/Expense)
+- Color picker
+- Icon selector
+
+### BudgetForm
+- Name input
+- Amount input with currency
+- Period selector (Daily/Weekly/Monthly/Yearly)
+- Start/End date pickers
+- Category selector
+
+## UI Components
+
+### DataTable
+- Sortable columns
+- Filtering
+- Pagination
+- Selection
+- Bulk actions
+
+### Charts
+- Line charts for trends
+- Bar charts for comparisons
+- Pie charts for distributions
+- Progress indicators for budgets
+
+### Forms
+- Input validation
+- Error messages
+- Loading states
+- Success/error notifications

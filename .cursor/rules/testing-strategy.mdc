@@ -1,0 +1,127 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Testing Strategy
+
+The financial management app implements a comprehensive testing strategy to ensure reliability and quality.
+
+## Testing Levels
+
+### Unit Testing
+- Tests for individual functions and components
+- Focus on business logic in isolation
+- Library: Jest and React Testing Library
+- Coverage target: 80%+ for critical paths
+- Location: `__tests__` directories alongside the code
+
+### Integration Testing
+- Tests for component interactions
+- API endpoint testing
+- Database interactions
+- Library: Jest with supertest for API testing
+- Location: `__tests__/integration` directory
+
+### End-to-End Testing
+- Full user flow testing
+- Simulates real user interactions
+- Library: Cypress
+- Location: `cypress` directory
+- Key flows:
+  - User registration and login
+  - Creating and editing transactions
+  - Managing accounts
+  - Working with budgets
+
+## Test Organization
+
+### Component Tests
+- Render testing
+- Prop validation
+- Event handling
+- State management
+- Accessibility testing
+
+### Hook Tests
+- Custom hook behavior
+- State updates
+- Side effects
+
+### API Tests
+- Endpoint availability
+- Request validation
+- Response format
+- Error handling
+- Authentication/authorization
+
+### Database Tests
+- Schema validation
+- Query performance
+- Transaction integrity
+- Data migrations
+
+## Testing Best Practices
+
+### Test Isolation
+- Each test should be independent
+- Mock external dependencies
+- Use test databases
+
+### Test Coverage
+- Track coverage with Jest
+- Focus on critical paths
+- Aim for 80%+ overall coverage
+
+### Test Data
+- Use factories for test data generation
+- Avoid hard-coded test data
+- Reset database between tests
+
+### Continuous Integration
+- Run tests on every PR
+- Block merging if tests fail
+- Track test performance metrics
+
+## Mock Strategy
+
+### External Services
+- Mock API calls to external services
+- Use `jest.mock()` for service modules
+- Create mock implementations for complex services
+
+### Database
+- Use in-memory SQLite for tests
+- Mock Prisma client for unit tests
+- Use transactions to roll back test data
+
+### Authentication
+- Mock authentication for component tests
+- Test both authenticated and unauthenticated states
+- Simulate different user roles
+
+## Test Running
+
+### Commands
+- `npm run test`: Run all unit and integration tests
+- `npm run test:watch`: Run tests in watch mode
+- `npm run test:coverage`: Generate coverage report
+- `npm run test:e2e`: Run end-to-end tests
+
+### CI Configuration
+- Run tests on pull requests
+- Run tests on merges to main
+- Collect and display test results
+- Track coverage trends
+
+## Performance Testing
+
+### Load Testing
+- Simulate multiple concurrent users
+- Test database query performance
+- Library: k6 or Apache JMeter
+
+### Component Performance
+- React profiler for component rendering
+- Track re-render counts
+- Memory usage monitoring
