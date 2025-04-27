@@ -31,8 +31,9 @@ model accounts {
   id        String      @id @default(uuid())
   name      String
   type      AccountType
-  balance   Decimal
+  balance   Int // Changed from Decimal to Int, storing cents
   currency  String
+  bankId    String? // ID of the account from the bank (e.g., Monobank)
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
 
@@ -45,8 +46,8 @@ model accounts {
 
 model transactions {
   id                String          @id @default(uuid())
-  sourceAmount      Decimal
-  destinationAmount Decimal
+  sourceAmount      Int // Changed from Decimal to Int, storing cents
+  destinationAmount Int // Changed from Decimal to Int, storing cents
   description       String
   date              DateTime
   type              TransactionType
@@ -84,8 +85,8 @@ model categories {
 model budgets {
   id            String       @id @default(uuid())
   name          String
-  plannedAmount Decimal
-  actualAmount  Decimal
+  plannedAmount Int // Changed from Decimal to Int, storing cents
+  actualAmount  Int // Changed from Decimal to Int, storing cents
   period        BudgetPeriod
   startDate     DateTime
   endDate       DateTime

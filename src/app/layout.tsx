@@ -4,6 +4,8 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { AuthProvider } from "@/providers/auth-provider";
 import { ThemeProvider } from "@/components/ui/theme-provider";
+import { Toaster } from "@/components/ui/use-toast";
+import QueryProvider from "@/providers/query-provider";
 
 const geist = Geist({
   subsets: ["latin"],
@@ -26,16 +28,19 @@ export default function RootLayout({
         "min-h-screen bg-background font-sans antialiased",
         geist.variable
       )}>
-        <AuthProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-          </ThemeProvider>
-        </AuthProvider>
+        <QueryProvider>
+          <AuthProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+            </ThemeProvider>
+          </AuthProvider>
+        </QueryProvider>
+        <Toaster />
       </body>
     </html>
   );

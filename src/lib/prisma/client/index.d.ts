@@ -2620,19 +2620,20 @@ export namespace Prisma {
   }
 
   export type AccountsAvgAggregateOutputType = {
-    balance: Decimal | null
+    balance: number | null
   }
 
   export type AccountsSumAggregateOutputType = {
-    balance: Decimal | null
+    balance: number | null
   }
 
   export type AccountsMinAggregateOutputType = {
     id: string | null
     name: string | null
     type: $Enums.AccountType | null
-    balance: Decimal | null
+    balance: number | null
     currency: string | null
+    bankId: string | null
     createdAt: Date | null
     updatedAt: Date | null
     userId: string | null
@@ -2642,8 +2643,9 @@ export namespace Prisma {
     id: string | null
     name: string | null
     type: $Enums.AccountType | null
-    balance: Decimal | null
+    balance: number | null
     currency: string | null
+    bankId: string | null
     createdAt: Date | null
     updatedAt: Date | null
     userId: string | null
@@ -2655,6 +2657,7 @@ export namespace Prisma {
     type: number
     balance: number
     currency: number
+    bankId: number
     createdAt: number
     updatedAt: number
     userId: number
@@ -2676,6 +2679,7 @@ export namespace Prisma {
     type?: true
     balance?: true
     currency?: true
+    bankId?: true
     createdAt?: true
     updatedAt?: true
     userId?: true
@@ -2687,6 +2691,7 @@ export namespace Prisma {
     type?: true
     balance?: true
     currency?: true
+    bankId?: true
     createdAt?: true
     updatedAt?: true
     userId?: true
@@ -2698,6 +2703,7 @@ export namespace Prisma {
     type?: true
     balance?: true
     currency?: true
+    bankId?: true
     createdAt?: true
     updatedAt?: true
     userId?: true
@@ -2794,8 +2800,9 @@ export namespace Prisma {
     id: string
     name: string
     type: $Enums.AccountType
-    balance: Decimal
+    balance: number
     currency: string
+    bankId: string | null
     createdAt: Date
     updatedAt: Date
     userId: string
@@ -2826,6 +2833,7 @@ export namespace Prisma {
     type?: boolean
     balance?: boolean
     currency?: boolean
+    bankId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     userId?: boolean
@@ -2841,6 +2849,7 @@ export namespace Prisma {
     type?: boolean
     balance?: boolean
     currency?: boolean
+    bankId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     userId?: boolean
@@ -2853,6 +2862,7 @@ export namespace Prisma {
     type?: boolean
     balance?: boolean
     currency?: boolean
+    bankId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     userId?: boolean
@@ -2865,12 +2875,13 @@ export namespace Prisma {
     type?: boolean
     balance?: boolean
     currency?: boolean
+    bankId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     userId?: boolean
   }
 
-  export type accountsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "type" | "balance" | "currency" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["accounts"]>
+  export type accountsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "type" | "balance" | "currency" | "bankId" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["accounts"]>
   export type accountsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | usersDefaultArgs<ExtArgs>
     sourceTransactions?: boolean | accounts$sourceTransactionsArgs<ExtArgs>
@@ -2895,8 +2906,9 @@ export namespace Prisma {
       id: string
       name: string
       type: $Enums.AccountType
-      balance: Prisma.Decimal
+      balance: number
       currency: string
+      bankId: string | null
       createdAt: Date
       updatedAt: Date
       userId: string
@@ -3329,8 +3341,9 @@ export namespace Prisma {
     readonly id: FieldRef<"accounts", 'String'>
     readonly name: FieldRef<"accounts", 'String'>
     readonly type: FieldRef<"accounts", 'AccountType'>
-    readonly balance: FieldRef<"accounts", 'Decimal'>
+    readonly balance: FieldRef<"accounts", 'Int'>
     readonly currency: FieldRef<"accounts", 'String'>
+    readonly bankId: FieldRef<"accounts", 'String'>
     readonly createdAt: FieldRef<"accounts", 'DateTime'>
     readonly updatedAt: FieldRef<"accounts", 'DateTime'>
     readonly userId: FieldRef<"accounts", 'String'>
@@ -3807,19 +3820,19 @@ export namespace Prisma {
   }
 
   export type TransactionsAvgAggregateOutputType = {
-    sourceAmount: Decimal | null
-    destinationAmount: Decimal | null
+    sourceAmount: number | null
+    destinationAmount: number | null
   }
 
   export type TransactionsSumAggregateOutputType = {
-    sourceAmount: Decimal | null
-    destinationAmount: Decimal | null
+    sourceAmount: number | null
+    destinationAmount: number | null
   }
 
   export type TransactionsMinAggregateOutputType = {
     id: string | null
-    sourceAmount: Decimal | null
-    destinationAmount: Decimal | null
+    sourceAmount: number | null
+    destinationAmount: number | null
     description: string | null
     date: Date | null
     type: $Enums.TransactionType | null
@@ -3833,8 +3846,8 @@ export namespace Prisma {
 
   export type TransactionsMaxAggregateOutputType = {
     id: string | null
-    sourceAmount: Decimal | null
-    destinationAmount: Decimal | null
+    sourceAmount: number | null
+    destinationAmount: number | null
     description: string | null
     date: Date | null
     type: $Enums.TransactionType | null
@@ -4007,8 +4020,8 @@ export namespace Prisma {
 
   export type TransactionsGroupByOutputType = {
     id: string
-    sourceAmount: Decimal
-    destinationAmount: Decimal
+    sourceAmount: number
+    destinationAmount: number
     description: string
     date: Date
     type: $Enums.TransactionType
@@ -4141,8 +4154,8 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      sourceAmount: Prisma.Decimal
-      destinationAmount: Prisma.Decimal
+      sourceAmount: number
+      destinationAmount: number
       description: string
       date: Date
       type: $Enums.TransactionType
@@ -4580,8 +4593,8 @@ export namespace Prisma {
    */
   interface transactionsFieldRefs {
     readonly id: FieldRef<"transactions", 'String'>
-    readonly sourceAmount: FieldRef<"transactions", 'Decimal'>
-    readonly destinationAmount: FieldRef<"transactions", 'Decimal'>
+    readonly sourceAmount: FieldRef<"transactions", 'Int'>
+    readonly destinationAmount: FieldRef<"transactions", 'Int'>
     readonly description: FieldRef<"transactions", 'String'>
     readonly date: FieldRef<"transactions", 'DateTime'>
     readonly type: FieldRef<"transactions", 'TransactionType'>
@@ -6239,20 +6252,20 @@ export namespace Prisma {
   }
 
   export type BudgetsAvgAggregateOutputType = {
-    plannedAmount: Decimal | null
-    actualAmount: Decimal | null
+    plannedAmount: number | null
+    actualAmount: number | null
   }
 
   export type BudgetsSumAggregateOutputType = {
-    plannedAmount: Decimal | null
-    actualAmount: Decimal | null
+    plannedAmount: number | null
+    actualAmount: number | null
   }
 
   export type BudgetsMinAggregateOutputType = {
     id: string | null
     name: string | null
-    plannedAmount: Decimal | null
-    actualAmount: Decimal | null
+    plannedAmount: number | null
+    actualAmount: number | null
     period: $Enums.BudgetPeriod | null
     startDate: Date | null
     endDate: Date | null
@@ -6265,8 +6278,8 @@ export namespace Prisma {
   export type BudgetsMaxAggregateOutputType = {
     id: string | null
     name: string | null
-    plannedAmount: Decimal | null
-    actualAmount: Decimal | null
+    plannedAmount: number | null
+    actualAmount: number | null
     period: $Enums.BudgetPeriod | null
     startDate: Date | null
     endDate: Date | null
@@ -6434,8 +6447,8 @@ export namespace Prisma {
   export type BudgetsGroupByOutputType = {
     id: string
     name: string
-    plannedAmount: Decimal
-    actualAmount: Decimal
+    plannedAmount: number
+    actualAmount: number
     period: $Enums.BudgetPeriod
     startDate: Date
     endDate: Date
@@ -6549,8 +6562,8 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
-      plannedAmount: Prisma.Decimal
-      actualAmount: Prisma.Decimal
+      plannedAmount: number
+      actualAmount: number
       period: $Enums.BudgetPeriod
       startDate: Date
       endDate: Date
@@ -6985,8 +6998,8 @@ export namespace Prisma {
   interface budgetsFieldRefs {
     readonly id: FieldRef<"budgets", 'String'>
     readonly name: FieldRef<"budgets", 'String'>
-    readonly plannedAmount: FieldRef<"budgets", 'Decimal'>
-    readonly actualAmount: FieldRef<"budgets", 'Decimal'>
+    readonly plannedAmount: FieldRef<"budgets", 'Int'>
+    readonly actualAmount: FieldRef<"budgets", 'Int'>
     readonly period: FieldRef<"budgets", 'BudgetPeriod'>
     readonly startDate: FieldRef<"budgets", 'DateTime'>
     readonly endDate: FieldRef<"budgets", 'DateTime'>
@@ -7436,6 +7449,7 @@ export namespace Prisma {
     type: 'type',
     balance: 'balance',
     currency: 'currency',
+    bankId: 'bankId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     userId: 'userId'
@@ -7537,9 +7551,9 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Decimal'
+   * Reference to a field of type 'Int'
    */
-  export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
     
 
 
@@ -7565,9 +7579,9 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Int'
+   * Reference to a field of type 'Float'
    */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
     
   /**
    * Deep Input Types
@@ -7655,8 +7669,9 @@ export namespace Prisma {
     id?: StringFilter<"accounts"> | string
     name?: StringFilter<"accounts"> | string
     type?: EnumAccountTypeFilter<"accounts"> | $Enums.AccountType
-    balance?: DecimalFilter<"accounts"> | Decimal | DecimalJsLike | number | string
+    balance?: IntFilter<"accounts"> | number
     currency?: StringFilter<"accounts"> | string
+    bankId?: StringNullableFilter<"accounts"> | string | null
     createdAt?: DateTimeFilter<"accounts"> | Date | string
     updatedAt?: DateTimeFilter<"accounts"> | Date | string
     userId?: StringFilter<"accounts"> | string
@@ -7671,6 +7686,7 @@ export namespace Prisma {
     type?: SortOrder
     balance?: SortOrder
     currency?: SortOrder
+    bankId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
@@ -7686,8 +7702,9 @@ export namespace Prisma {
     NOT?: accountsWhereInput | accountsWhereInput[]
     name?: StringFilter<"accounts"> | string
     type?: EnumAccountTypeFilter<"accounts"> | $Enums.AccountType
-    balance?: DecimalFilter<"accounts"> | Decimal | DecimalJsLike | number | string
+    balance?: IntFilter<"accounts"> | number
     currency?: StringFilter<"accounts"> | string
+    bankId?: StringNullableFilter<"accounts"> | string | null
     createdAt?: DateTimeFilter<"accounts"> | Date | string
     updatedAt?: DateTimeFilter<"accounts"> | Date | string
     userId?: StringFilter<"accounts"> | string
@@ -7702,6 +7719,7 @@ export namespace Prisma {
     type?: SortOrder
     balance?: SortOrder
     currency?: SortOrder
+    bankId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
@@ -7719,8 +7737,9 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"accounts"> | string
     name?: StringWithAggregatesFilter<"accounts"> | string
     type?: EnumAccountTypeWithAggregatesFilter<"accounts"> | $Enums.AccountType
-    balance?: DecimalWithAggregatesFilter<"accounts"> | Decimal | DecimalJsLike | number | string
+    balance?: IntWithAggregatesFilter<"accounts"> | number
     currency?: StringWithAggregatesFilter<"accounts"> | string
+    bankId?: StringNullableWithAggregatesFilter<"accounts"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"accounts"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"accounts"> | Date | string
     userId?: StringWithAggregatesFilter<"accounts"> | string
@@ -7731,8 +7750,8 @@ export namespace Prisma {
     OR?: transactionsWhereInput[]
     NOT?: transactionsWhereInput | transactionsWhereInput[]
     id?: StringFilter<"transactions"> | string
-    sourceAmount?: DecimalFilter<"transactions"> | Decimal | DecimalJsLike | number | string
-    destinationAmount?: DecimalFilter<"transactions"> | Decimal | DecimalJsLike | number | string
+    sourceAmount?: IntFilter<"transactions"> | number
+    destinationAmount?: IntFilter<"transactions"> | number
     description?: StringFilter<"transactions"> | string
     date?: DateTimeFilter<"transactions"> | Date | string
     type?: EnumTransactionTypeFilter<"transactions"> | $Enums.TransactionType
@@ -7772,8 +7791,8 @@ export namespace Prisma {
     AND?: transactionsWhereInput | transactionsWhereInput[]
     OR?: transactionsWhereInput[]
     NOT?: transactionsWhereInput | transactionsWhereInput[]
-    sourceAmount?: DecimalFilter<"transactions"> | Decimal | DecimalJsLike | number | string
-    destinationAmount?: DecimalFilter<"transactions"> | Decimal | DecimalJsLike | number | string
+    sourceAmount?: IntFilter<"transactions"> | number
+    destinationAmount?: IntFilter<"transactions"> | number
     description?: StringFilter<"transactions"> | string
     date?: DateTimeFilter<"transactions"> | Date | string
     type?: EnumTransactionTypeFilter<"transactions"> | $Enums.TransactionType
@@ -7814,8 +7833,8 @@ export namespace Prisma {
     OR?: transactionsScalarWhereWithAggregatesInput[]
     NOT?: transactionsScalarWhereWithAggregatesInput | transactionsScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"transactions"> | string
-    sourceAmount?: DecimalWithAggregatesFilter<"transactions"> | Decimal | DecimalJsLike | number | string
-    destinationAmount?: DecimalWithAggregatesFilter<"transactions"> | Decimal | DecimalJsLike | number | string
+    sourceAmount?: IntWithAggregatesFilter<"transactions"> | number
+    destinationAmount?: IntWithAggregatesFilter<"transactions"> | number
     description?: StringWithAggregatesFilter<"transactions"> | string
     date?: DateTimeWithAggregatesFilter<"transactions"> | Date | string
     type?: EnumTransactionTypeWithAggregatesFilter<"transactions"> | $Enums.TransactionType
@@ -7914,8 +7933,8 @@ export namespace Prisma {
     NOT?: budgetsWhereInput | budgetsWhereInput[]
     id?: StringFilter<"budgets"> | string
     name?: StringFilter<"budgets"> | string
-    plannedAmount?: DecimalFilter<"budgets"> | Decimal | DecimalJsLike | number | string
-    actualAmount?: DecimalFilter<"budgets"> | Decimal | DecimalJsLike | number | string
+    plannedAmount?: IntFilter<"budgets"> | number
+    actualAmount?: IntFilter<"budgets"> | number
     period?: EnumBudgetPeriodFilter<"budgets"> | $Enums.BudgetPeriod
     startDate?: DateTimeFilter<"budgets"> | Date | string
     endDate?: DateTimeFilter<"budgets"> | Date | string
@@ -7949,8 +7968,8 @@ export namespace Prisma {
     OR?: budgetsWhereInput[]
     NOT?: budgetsWhereInput | budgetsWhereInput[]
     name?: StringFilter<"budgets"> | string
-    plannedAmount?: DecimalFilter<"budgets"> | Decimal | DecimalJsLike | number | string
-    actualAmount?: DecimalFilter<"budgets"> | Decimal | DecimalJsLike | number | string
+    plannedAmount?: IntFilter<"budgets"> | number
+    actualAmount?: IntFilter<"budgets"> | number
     period?: EnumBudgetPeriodFilter<"budgets"> | $Enums.BudgetPeriod
     startDate?: DateTimeFilter<"budgets"> | Date | string
     endDate?: DateTimeFilter<"budgets"> | Date | string
@@ -7987,8 +8006,8 @@ export namespace Prisma {
     NOT?: budgetsScalarWhereWithAggregatesInput | budgetsScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"budgets"> | string
     name?: StringWithAggregatesFilter<"budgets"> | string
-    plannedAmount?: DecimalWithAggregatesFilter<"budgets"> | Decimal | DecimalJsLike | number | string
-    actualAmount?: DecimalWithAggregatesFilter<"budgets"> | Decimal | DecimalJsLike | number | string
+    plannedAmount?: IntWithAggregatesFilter<"budgets"> | number
+    actualAmount?: IntWithAggregatesFilter<"budgets"> | number
     period?: EnumBudgetPeriodWithAggregatesFilter<"budgets"> | $Enums.BudgetPeriod
     startDate?: DateTimeWithAggregatesFilter<"budgets"> | Date | string
     endDate?: DateTimeWithAggregatesFilter<"budgets"> | Date | string
@@ -8088,8 +8107,9 @@ export namespace Prisma {
     id?: string
     name: string
     type: $Enums.AccountType
-    balance: Decimal | DecimalJsLike | number | string
+    balance: number
     currency: string
+    bankId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: usersCreateNestedOneWithoutAccountsInput
@@ -8101,8 +8121,9 @@ export namespace Prisma {
     id?: string
     name: string
     type: $Enums.AccountType
-    balance: Decimal | DecimalJsLike | number | string
+    balance: number
     currency: string
+    bankId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
@@ -8114,8 +8135,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
-    balance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    balance?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
+    bankId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: usersUpdateOneRequiredWithoutAccountsNestedInput
@@ -8127,8 +8149,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
-    balance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    balance?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
+    bankId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
@@ -8140,8 +8163,9 @@ export namespace Prisma {
     id?: string
     name: string
     type: $Enums.AccountType
-    balance: Decimal | DecimalJsLike | number | string
+    balance: number
     currency: string
+    bankId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
@@ -8151,8 +8175,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
-    balance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    balance?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
+    bankId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -8161,8 +8186,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
-    balance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    balance?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
+    bankId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
@@ -8170,8 +8196,8 @@ export namespace Prisma {
 
   export type transactionsCreateInput = {
     id?: string
-    sourceAmount: Decimal | DecimalJsLike | number | string
-    destinationAmount: Decimal | DecimalJsLike | number | string
+    sourceAmount: number
+    destinationAmount: number
     description: string
     date: Date | string
     type: $Enums.TransactionType
@@ -8185,8 +8211,8 @@ export namespace Prisma {
 
   export type transactionsUncheckedCreateInput = {
     id?: string
-    sourceAmount: Decimal | DecimalJsLike | number | string
-    destinationAmount: Decimal | DecimalJsLike | number | string
+    sourceAmount: number
+    destinationAmount: number
     description: string
     date: Date | string
     type: $Enums.TransactionType
@@ -8200,8 +8226,8 @@ export namespace Prisma {
 
   export type transactionsUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    sourceAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    destinationAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    sourceAmount?: IntFieldUpdateOperationsInput | number
+    destinationAmount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
@@ -8215,8 +8241,8 @@ export namespace Prisma {
 
   export type transactionsUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    sourceAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    destinationAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    sourceAmount?: IntFieldUpdateOperationsInput | number
+    destinationAmount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
@@ -8230,8 +8256,8 @@ export namespace Prisma {
 
   export type transactionsCreateManyInput = {
     id?: string
-    sourceAmount: Decimal | DecimalJsLike | number | string
-    destinationAmount: Decimal | DecimalJsLike | number | string
+    sourceAmount: number
+    destinationAmount: number
     description: string
     date: Date | string
     type: $Enums.TransactionType
@@ -8245,8 +8271,8 @@ export namespace Prisma {
 
   export type transactionsUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    sourceAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    destinationAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    sourceAmount?: IntFieldUpdateOperationsInput | number
+    destinationAmount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
@@ -8256,8 +8282,8 @@ export namespace Prisma {
 
   export type transactionsUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    sourceAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    destinationAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    sourceAmount?: IntFieldUpdateOperationsInput | number
+    destinationAmount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
@@ -8363,8 +8389,8 @@ export namespace Prisma {
   export type budgetsCreateInput = {
     id?: string
     name: string
-    plannedAmount: Decimal | DecimalJsLike | number | string
-    actualAmount: Decimal | DecimalJsLike | number | string
+    plannedAmount: number
+    actualAmount: number
     period: $Enums.BudgetPeriod
     startDate: Date | string
     endDate: Date | string
@@ -8377,8 +8403,8 @@ export namespace Prisma {
   export type budgetsUncheckedCreateInput = {
     id?: string
     name: string
-    plannedAmount: Decimal | DecimalJsLike | number | string
-    actualAmount: Decimal | DecimalJsLike | number | string
+    plannedAmount: number
+    actualAmount: number
     period: $Enums.BudgetPeriod
     startDate: Date | string
     endDate: Date | string
@@ -8391,8 +8417,8 @@ export namespace Prisma {
   export type budgetsUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    plannedAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    actualAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    plannedAmount?: IntFieldUpdateOperationsInput | number
+    actualAmount?: IntFieldUpdateOperationsInput | number
     period?: EnumBudgetPeriodFieldUpdateOperationsInput | $Enums.BudgetPeriod
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8405,8 +8431,8 @@ export namespace Prisma {
   export type budgetsUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    plannedAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    actualAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    plannedAmount?: IntFieldUpdateOperationsInput | number
+    actualAmount?: IntFieldUpdateOperationsInput | number
     period?: EnumBudgetPeriodFieldUpdateOperationsInput | $Enums.BudgetPeriod
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8419,8 +8445,8 @@ export namespace Prisma {
   export type budgetsCreateManyInput = {
     id?: string
     name: string
-    plannedAmount: Decimal | DecimalJsLike | number | string
-    actualAmount: Decimal | DecimalJsLike | number | string
+    plannedAmount: number
+    actualAmount: number
     period: $Enums.BudgetPeriod
     startDate: Date | string
     endDate: Date | string
@@ -8433,8 +8459,8 @@ export namespace Prisma {
   export type budgetsUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    plannedAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    actualAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    plannedAmount?: IntFieldUpdateOperationsInput | number
+    actualAmount?: IntFieldUpdateOperationsInput | number
     period?: EnumBudgetPeriodFieldUpdateOperationsInput | $Enums.BudgetPeriod
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8445,8 +8471,8 @@ export namespace Prisma {
   export type budgetsUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    plannedAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    actualAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    plannedAmount?: IntFieldUpdateOperationsInput | number
+    actualAmount?: IntFieldUpdateOperationsInput | number
     period?: EnumBudgetPeriodFieldUpdateOperationsInput | $Enums.BudgetPeriod
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8625,15 +8651,15 @@ export namespace Prisma {
     not?: NestedEnumAccountTypeFilter<$PrismaModel> | $Enums.AccountType
   }
 
-  export type DecimalFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[]
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[]
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type UsersScalarRelationFilter = {
@@ -8647,6 +8673,7 @@ export namespace Prisma {
     type?: SortOrder
     balance?: SortOrder
     currency?: SortOrder
+    bankId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
@@ -8662,6 +8689,7 @@ export namespace Prisma {
     type?: SortOrder
     balance?: SortOrder
     currency?: SortOrder
+    bankId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
@@ -8673,6 +8701,7 @@ export namespace Prisma {
     type?: SortOrder
     balance?: SortOrder
     currency?: SortOrder
+    bankId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
@@ -8692,20 +8721,20 @@ export namespace Prisma {
     _max?: NestedEnumAccountTypeFilter<$PrismaModel>
   }
 
-  export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[]
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[]
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
     _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedDecimalFilter<$PrismaModel>
-    _sum?: NestedDecimalFilter<$PrismaModel>
-    _min?: NestedDecimalFilter<$PrismaModel>
-    _max?: NestedDecimalFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type EnumTransactionTypeFilter<$PrismaModel = never> = {
@@ -9135,12 +9164,12 @@ export namespace Prisma {
     set?: $Enums.AccountType
   }
 
-  export type DecimalFieldUpdateOperationsInput = {
-    set?: Decimal | DecimalJsLike | number | string
-    increment?: Decimal | DecimalJsLike | number | string
-    decrement?: Decimal | DecimalJsLike | number | string
-    multiply?: Decimal | DecimalJsLike | number | string
-    divide?: Decimal | DecimalJsLike | number | string
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type usersUpdateOneRequiredWithoutAccountsNestedInput = {
@@ -9523,17 +9552,6 @@ export namespace Prisma {
     not?: NestedEnumAccountTypeFilter<$PrismaModel> | $Enums.AccountType
   }
 
-  export type NestedDecimalFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[]
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[]
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-  }
-
   export type NestedEnumAccountTypeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.AccountType | EnumAccountTypeFieldRefInput<$PrismaModel>
     in?: $Enums.AccountType[]
@@ -9544,20 +9562,31 @@ export namespace Prisma {
     _max?: NestedEnumAccountTypeFilter<$PrismaModel>
   }
 
-  export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[]
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[]
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
     _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedDecimalFilter<$PrismaModel>
-    _sum?: NestedDecimalFilter<$PrismaModel>
-    _min?: NestedDecimalFilter<$PrismaModel>
-    _max?: NestedDecimalFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type NestedEnumTransactionTypeFilter<$PrismaModel = never> = {
@@ -9615,8 +9644,9 @@ export namespace Prisma {
     id?: string
     name: string
     type: $Enums.AccountType
-    balance: Decimal | DecimalJsLike | number | string
+    balance: number
     currency: string
+    bankId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sourceTransactions?: transactionsCreateNestedManyWithoutSourceAccountInput
@@ -9627,8 +9657,9 @@ export namespace Prisma {
     id?: string
     name: string
     type: $Enums.AccountType
-    balance: Decimal | DecimalJsLike | number | string
+    balance: number
     currency: string
+    bankId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     sourceTransactions?: transactionsUncheckedCreateNestedManyWithoutSourceAccountInput
@@ -9646,8 +9677,8 @@ export namespace Prisma {
 
   export type transactionsCreateWithoutUserInput = {
     id?: string
-    sourceAmount: Decimal | DecimalJsLike | number | string
-    destinationAmount: Decimal | DecimalJsLike | number | string
+    sourceAmount: number
+    destinationAmount: number
     description: string
     date: Date | string
     type: $Enums.TransactionType
@@ -9660,8 +9691,8 @@ export namespace Prisma {
 
   export type transactionsUncheckedCreateWithoutUserInput = {
     id?: string
-    sourceAmount: Decimal | DecimalJsLike | number | string
-    destinationAmount: Decimal | DecimalJsLike | number | string
+    sourceAmount: number
+    destinationAmount: number
     description: string
     date: Date | string
     type: $Enums.TransactionType
@@ -9719,8 +9750,8 @@ export namespace Prisma {
   export type budgetsCreateWithoutUserInput = {
     id?: string
     name: string
-    plannedAmount: Decimal | DecimalJsLike | number | string
-    actualAmount: Decimal | DecimalJsLike | number | string
+    plannedAmount: number
+    actualAmount: number
     period: $Enums.BudgetPeriod
     startDate: Date | string
     endDate: Date | string
@@ -9732,8 +9763,8 @@ export namespace Prisma {
   export type budgetsUncheckedCreateWithoutUserInput = {
     id?: string
     name: string
-    plannedAmount: Decimal | DecimalJsLike | number | string
-    actualAmount: Decimal | DecimalJsLike | number | string
+    plannedAmount: number
+    actualAmount: number
     period: $Enums.BudgetPeriod
     startDate: Date | string
     endDate: Date | string
@@ -9774,8 +9805,9 @@ export namespace Prisma {
     id?: StringFilter<"accounts"> | string
     name?: StringFilter<"accounts"> | string
     type?: EnumAccountTypeFilter<"accounts"> | $Enums.AccountType
-    balance?: DecimalFilter<"accounts"> | Decimal | DecimalJsLike | number | string
+    balance?: IntFilter<"accounts"> | number
     currency?: StringFilter<"accounts"> | string
+    bankId?: StringNullableFilter<"accounts"> | string | null
     createdAt?: DateTimeFilter<"accounts"> | Date | string
     updatedAt?: DateTimeFilter<"accounts"> | Date | string
     userId?: StringFilter<"accounts"> | string
@@ -9802,8 +9834,8 @@ export namespace Prisma {
     OR?: transactionsScalarWhereInput[]
     NOT?: transactionsScalarWhereInput | transactionsScalarWhereInput[]
     id?: StringFilter<"transactions"> | string
-    sourceAmount?: DecimalFilter<"transactions"> | Decimal | DecimalJsLike | number | string
-    destinationAmount?: DecimalFilter<"transactions"> | Decimal | DecimalJsLike | number | string
+    sourceAmount?: IntFilter<"transactions"> | number
+    destinationAmount?: IntFilter<"transactions"> | number
     description?: StringFilter<"transactions"> | string
     date?: DateTimeFilter<"transactions"> | Date | string
     type?: EnumTransactionTypeFilter<"transactions"> | $Enums.TransactionType
@@ -9868,8 +9900,8 @@ export namespace Prisma {
     NOT?: budgetsScalarWhereInput | budgetsScalarWhereInput[]
     id?: StringFilter<"budgets"> | string
     name?: StringFilter<"budgets"> | string
-    plannedAmount?: DecimalFilter<"budgets"> | Decimal | DecimalJsLike | number | string
-    actualAmount?: DecimalFilter<"budgets"> | Decimal | DecimalJsLike | number | string
+    plannedAmount?: IntFilter<"budgets"> | number
+    actualAmount?: IntFilter<"budgets"> | number
     period?: EnumBudgetPeriodFilter<"budgets"> | $Enums.BudgetPeriod
     startDate?: DateTimeFilter<"budgets"> | Date | string
     endDate?: DateTimeFilter<"budgets"> | Date | string
@@ -9912,8 +9944,8 @@ export namespace Prisma {
 
   export type transactionsCreateWithoutSourceAccountInput = {
     id?: string
-    sourceAmount: Decimal | DecimalJsLike | number | string
-    destinationAmount: Decimal | DecimalJsLike | number | string
+    sourceAmount: number
+    destinationAmount: number
     description: string
     date: Date | string
     type: $Enums.TransactionType
@@ -9926,8 +9958,8 @@ export namespace Prisma {
 
   export type transactionsUncheckedCreateWithoutSourceAccountInput = {
     id?: string
-    sourceAmount: Decimal | DecimalJsLike | number | string
-    destinationAmount: Decimal | DecimalJsLike | number | string
+    sourceAmount: number
+    destinationAmount: number
     description: string
     date: Date | string
     type: $Enums.TransactionType
@@ -9949,8 +9981,8 @@ export namespace Prisma {
 
   export type transactionsCreateWithoutDestinationAccountInput = {
     id?: string
-    sourceAmount: Decimal | DecimalJsLike | number | string
-    destinationAmount: Decimal | DecimalJsLike | number | string
+    sourceAmount: number
+    destinationAmount: number
     description: string
     date: Date | string
     type: $Enums.TransactionType
@@ -9963,8 +9995,8 @@ export namespace Prisma {
 
   export type transactionsUncheckedCreateWithoutDestinationAccountInput = {
     id?: string
-    sourceAmount: Decimal | DecimalJsLike | number | string
-    destinationAmount: Decimal | DecimalJsLike | number | string
+    sourceAmount: number
+    destinationAmount: number
     description: string
     date: Date | string
     type: $Enums.TransactionType
@@ -10057,8 +10089,9 @@ export namespace Prisma {
     id?: string
     name: string
     type: $Enums.AccountType
-    balance: Decimal | DecimalJsLike | number | string
+    balance: number
     currency: string
+    bankId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: usersCreateNestedOneWithoutAccountsInput
@@ -10069,8 +10102,9 @@ export namespace Prisma {
     id?: string
     name: string
     type: $Enums.AccountType
-    balance: Decimal | DecimalJsLike | number | string
+    balance: number
     currency: string
+    bankId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
@@ -10086,8 +10120,9 @@ export namespace Prisma {
     id?: string
     name: string
     type: $Enums.AccountType
-    balance: Decimal | DecimalJsLike | number | string
+    balance: number
     currency: string
+    bankId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: usersCreateNestedOneWithoutAccountsInput
@@ -10098,8 +10133,9 @@ export namespace Prisma {
     id?: string
     name: string
     type: $Enums.AccountType
-    balance: Decimal | DecimalJsLike | number | string
+    balance: number
     currency: string
+    bankId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
@@ -10188,8 +10224,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
-    balance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    balance?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
+    bankId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: usersUpdateOneRequiredWithoutAccountsNestedInput
@@ -10200,8 +10237,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
-    balance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    balance?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
+    bankId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
@@ -10223,8 +10261,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
-    balance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    balance?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
+    bankId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: usersUpdateOneRequiredWithoutAccountsNestedInput
@@ -10235,8 +10274,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
-    balance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    balance?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
+    bankId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
@@ -10350,8 +10390,8 @@ export namespace Prisma {
 
   export type transactionsCreateWithoutCategoryInput = {
     id?: string
-    sourceAmount: Decimal | DecimalJsLike | number | string
-    destinationAmount: Decimal | DecimalJsLike | number | string
+    sourceAmount: number
+    destinationAmount: number
     description: string
     date: Date | string
     type: $Enums.TransactionType
@@ -10364,8 +10404,8 @@ export namespace Prisma {
 
   export type transactionsUncheckedCreateWithoutCategoryInput = {
     id?: string
-    sourceAmount: Decimal | DecimalJsLike | number | string
-    destinationAmount: Decimal | DecimalJsLike | number | string
+    sourceAmount: number
+    destinationAmount: number
     description: string
     date: Date | string
     type: $Enums.TransactionType
@@ -10388,8 +10428,8 @@ export namespace Prisma {
   export type budgetsCreateWithoutCategoryInput = {
     id?: string
     name: string
-    plannedAmount: Decimal | DecimalJsLike | number | string
-    actualAmount: Decimal | DecimalJsLike | number | string
+    plannedAmount: number
+    actualAmount: number
     period: $Enums.BudgetPeriod
     startDate: Date | string
     endDate: Date | string
@@ -10401,8 +10441,8 @@ export namespace Prisma {
   export type budgetsUncheckedCreateWithoutCategoryInput = {
     id?: string
     name: string
-    plannedAmount: Decimal | DecimalJsLike | number | string
-    actualAmount: Decimal | DecimalJsLike | number | string
+    plannedAmount: number
+    actualAmount: number
     period: $Enums.BudgetPeriod
     startDate: Date | string
     endDate: Date | string
@@ -10629,16 +10669,17 @@ export namespace Prisma {
     id?: string
     name: string
     type: $Enums.AccountType
-    balance: Decimal | DecimalJsLike | number | string
+    balance: number
     currency: string
+    bankId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type transactionsCreateManyUserInput = {
     id?: string
-    sourceAmount: Decimal | DecimalJsLike | number | string
-    destinationAmount: Decimal | DecimalJsLike | number | string
+    sourceAmount: number
+    destinationAmount: number
     description: string
     date: Date | string
     type: $Enums.TransactionType
@@ -10663,8 +10704,8 @@ export namespace Prisma {
   export type budgetsCreateManyUserInput = {
     id?: string
     name: string
-    plannedAmount: Decimal | DecimalJsLike | number | string
-    actualAmount: Decimal | DecimalJsLike | number | string
+    plannedAmount: number
+    actualAmount: number
     period: $Enums.BudgetPeriod
     startDate: Date | string
     endDate: Date | string
@@ -10677,8 +10718,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
-    balance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    balance?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
+    bankId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sourceTransactions?: transactionsUpdateManyWithoutSourceAccountNestedInput
@@ -10689,8 +10731,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
-    balance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    balance?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
+    bankId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sourceTransactions?: transactionsUncheckedUpdateManyWithoutSourceAccountNestedInput
@@ -10701,16 +10744,17 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
-    balance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    balance?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
+    bankId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type transactionsUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    sourceAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    destinationAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    sourceAmount?: IntFieldUpdateOperationsInput | number
+    destinationAmount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
@@ -10723,8 +10767,8 @@ export namespace Prisma {
 
   export type transactionsUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    sourceAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    destinationAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    sourceAmount?: IntFieldUpdateOperationsInput | number
+    destinationAmount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
@@ -10737,8 +10781,8 @@ export namespace Prisma {
 
   export type transactionsUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    sourceAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    destinationAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    sourceAmount?: IntFieldUpdateOperationsInput | number
+    destinationAmount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
@@ -10789,8 +10833,8 @@ export namespace Prisma {
   export type budgetsUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    plannedAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    actualAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    plannedAmount?: IntFieldUpdateOperationsInput | number
+    actualAmount?: IntFieldUpdateOperationsInput | number
     period?: EnumBudgetPeriodFieldUpdateOperationsInput | $Enums.BudgetPeriod
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10802,8 +10846,8 @@ export namespace Prisma {
   export type budgetsUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    plannedAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    actualAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    plannedAmount?: IntFieldUpdateOperationsInput | number
+    actualAmount?: IntFieldUpdateOperationsInput | number
     period?: EnumBudgetPeriodFieldUpdateOperationsInput | $Enums.BudgetPeriod
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10815,8 +10859,8 @@ export namespace Prisma {
   export type budgetsUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    plannedAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    actualAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    plannedAmount?: IntFieldUpdateOperationsInput | number
+    actualAmount?: IntFieldUpdateOperationsInput | number
     period?: EnumBudgetPeriodFieldUpdateOperationsInput | $Enums.BudgetPeriod
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10827,8 +10871,8 @@ export namespace Prisma {
 
   export type transactionsCreateManySourceAccountInput = {
     id?: string
-    sourceAmount: Decimal | DecimalJsLike | number | string
-    destinationAmount: Decimal | DecimalJsLike | number | string
+    sourceAmount: number
+    destinationAmount: number
     description: string
     date: Date | string
     type: $Enums.TransactionType
@@ -10841,8 +10885,8 @@ export namespace Prisma {
 
   export type transactionsCreateManyDestinationAccountInput = {
     id?: string
-    sourceAmount: Decimal | DecimalJsLike | number | string
-    destinationAmount: Decimal | DecimalJsLike | number | string
+    sourceAmount: number
+    destinationAmount: number
     description: string
     date: Date | string
     type: $Enums.TransactionType
@@ -10855,8 +10899,8 @@ export namespace Prisma {
 
   export type transactionsUpdateWithoutSourceAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
-    sourceAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    destinationAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    sourceAmount?: IntFieldUpdateOperationsInput | number
+    destinationAmount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
@@ -10869,8 +10913,8 @@ export namespace Prisma {
 
   export type transactionsUncheckedUpdateWithoutSourceAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
-    sourceAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    destinationAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    sourceAmount?: IntFieldUpdateOperationsInput | number
+    destinationAmount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
@@ -10883,8 +10927,8 @@ export namespace Prisma {
 
   export type transactionsUncheckedUpdateManyWithoutSourceAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
-    sourceAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    destinationAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    sourceAmount?: IntFieldUpdateOperationsInput | number
+    destinationAmount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
@@ -10897,8 +10941,8 @@ export namespace Prisma {
 
   export type transactionsUpdateWithoutDestinationAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
-    sourceAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    destinationAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    sourceAmount?: IntFieldUpdateOperationsInput | number
+    destinationAmount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
@@ -10911,8 +10955,8 @@ export namespace Prisma {
 
   export type transactionsUncheckedUpdateWithoutDestinationAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
-    sourceAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    destinationAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    sourceAmount?: IntFieldUpdateOperationsInput | number
+    destinationAmount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
@@ -10925,8 +10969,8 @@ export namespace Prisma {
 
   export type transactionsUncheckedUpdateManyWithoutDestinationAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
-    sourceAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    destinationAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    sourceAmount?: IntFieldUpdateOperationsInput | number
+    destinationAmount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
@@ -10939,8 +10983,8 @@ export namespace Prisma {
 
   export type transactionsCreateManyCategoryInput = {
     id?: string
-    sourceAmount: Decimal | DecimalJsLike | number | string
-    destinationAmount: Decimal | DecimalJsLike | number | string
+    sourceAmount: number
+    destinationAmount: number
     description: string
     date: Date | string
     type: $Enums.TransactionType
@@ -10954,8 +10998,8 @@ export namespace Prisma {
   export type budgetsCreateManyCategoryInput = {
     id?: string
     name: string
-    plannedAmount: Decimal | DecimalJsLike | number | string
-    actualAmount: Decimal | DecimalJsLike | number | string
+    plannedAmount: number
+    actualAmount: number
     period: $Enums.BudgetPeriod
     startDate: Date | string
     endDate: Date | string
@@ -10966,8 +11010,8 @@ export namespace Prisma {
 
   export type transactionsUpdateWithoutCategoryInput = {
     id?: StringFieldUpdateOperationsInput | string
-    sourceAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    destinationAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    sourceAmount?: IntFieldUpdateOperationsInput | number
+    destinationAmount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
@@ -10980,8 +11024,8 @@ export namespace Prisma {
 
   export type transactionsUncheckedUpdateWithoutCategoryInput = {
     id?: StringFieldUpdateOperationsInput | string
-    sourceAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    destinationAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    sourceAmount?: IntFieldUpdateOperationsInput | number
+    destinationAmount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
@@ -10994,8 +11038,8 @@ export namespace Prisma {
 
   export type transactionsUncheckedUpdateManyWithoutCategoryInput = {
     id?: StringFieldUpdateOperationsInput | string
-    sourceAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    destinationAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    sourceAmount?: IntFieldUpdateOperationsInput | number
+    destinationAmount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
@@ -11009,8 +11053,8 @@ export namespace Prisma {
   export type budgetsUpdateWithoutCategoryInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    plannedAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    actualAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    plannedAmount?: IntFieldUpdateOperationsInput | number
+    actualAmount?: IntFieldUpdateOperationsInput | number
     period?: EnumBudgetPeriodFieldUpdateOperationsInput | $Enums.BudgetPeriod
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11022,8 +11066,8 @@ export namespace Prisma {
   export type budgetsUncheckedUpdateWithoutCategoryInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    plannedAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    actualAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    plannedAmount?: IntFieldUpdateOperationsInput | number
+    actualAmount?: IntFieldUpdateOperationsInput | number
     period?: EnumBudgetPeriodFieldUpdateOperationsInput | $Enums.BudgetPeriod
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11035,8 +11079,8 @@ export namespace Prisma {
   export type budgetsUncheckedUpdateManyWithoutCategoryInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    plannedAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    actualAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    plannedAmount?: IntFieldUpdateOperationsInput | number
+    actualAmount?: IntFieldUpdateOperationsInput | number
     period?: EnumBudgetPeriodFieldUpdateOperationsInput | $Enums.BudgetPeriod
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string

@@ -31,11 +31,15 @@ export function UserNav() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
+        <Button variant="ghost" className="w-full flex items-center justify-start p-2 h-auto">
+          <Avatar className="h-8 w-8 mr-2">
             <AvatarImage src={session?.user?.image || ''} alt="Profile" />
             <AvatarFallback>{getInitials()}</AvatarFallback>
           </Avatar>
+          <div className="flex flex-col items-start">
+            <p className="text-sm font-medium">{session?.user?.name}</p>
+            <p className="text-xs text-muted-foreground">{session?.user?.email}</p>
+          </div>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>

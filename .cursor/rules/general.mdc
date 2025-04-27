@@ -10,6 +10,7 @@ alwaysApply: true
 - Implement proper loading/error states
 - Prefer composition over inheritance
 - Follow atomic design principles
+- Implement responsive layouts for small and big screens
 
 ## State Management
 - Use React Context for global state
