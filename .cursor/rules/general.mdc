@@ -1,0 +1,30 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# FI-APP Development Guidelines
+
+## Component Structure
+- Use Server/Client components appropriately
+- Implement proper loading/error states
+- Prefer composition over inheritance
+- Follow atomic design principles
+
+## State Management
+- Use React Context for global state
+- Server components for data fetching
+- Form state with React Hook Form
+
+## Types & Interfaces
+- Create comprehensive type definitions for all entities
+- Use zod for validation schemas
+- Export types from a central location
+
+## Best Practices
+- Implement error boundaries
+- Use React Suspense for loading states
+- Optimize images and assets
+- Write unit tests for critical functions
+- Add accessibility features
+- Do not use any as fixer

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verify } from 'jsonwebtoken';
+import { getToken } from 'next-auth/jwt';
 
 export const config = {
   matcher: [
@@ -19,27 +19,18 @@ export const config = {
 };
 
 export async function middleware(req: NextRequest) {
-  const token = req.cookies.get('token')?.value;
+  const session = await getToken({ 
+    req, 
+    secret: process.env.NEXTAUTH_SECRET || 'fallback_secret_key_change_in_production',
+  });
 
-  // If there's no token, redirect to login page
-  if (!token) {
+  // If user is not authenticated, redirect to login
+  if (!session) {
     const url = new URL('/auth/login', req.url);
-    url.searchParams.set('redirectTo', req.nextUrl.pathname);
+    url.searchParams.set('callbackUrl', req.nextUrl.pathname);
     return NextResponse.redirect(url);
   }
 
-  try {
-    // Verify token
-    verify(token, process.env.JWT_SECRET || 'fallback_secret_key_change_in_production');
-    return NextResponse.next();
-  } catch (error) {
-    // Token is invalid
-    console.error('Token verification failed:', error);
-    
-    // Clear the invalid token
-    const response = NextResponse.redirect(new URL('/auth/login', req.url));
-    response.cookies.delete('token');
-    
-    return response;
-  }
+  // If user is authenticated, allow the request
+  return NextResponse.next();
 } 

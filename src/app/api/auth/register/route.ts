@@ -1,22 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { hash } from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
-import { hash } from 'bcrypt';
+import { z } from 'zod';
+
+// Registration request validation schema
+const registerSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  email: z.string().email('Please enter a valid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+});
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { name, email, password } = body;
-
-    // Validate input
-    if (!name || !email || !password) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
+    
+    // Validate request data
+    const result = registerSchema.safeParse(body);
+    if (!result.success) {
+      const errorMessage = result.error.issues.map(issue => issue.message).join(', ');
+      return NextResponse.json({ error: errorMessage }, { status: 400 });
     }
+    
+    const { name, email, password } = result.data;
 
-    // Check if user with email already exists
-    const existingUser = await prisma.user.findUnique({
+    // Check if user already exists
+    const existingUser = await prisma.users.findUnique({
       where: { email },
     });
 
@@ -27,11 +35,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Hash password
+    // Hash the password
     const hashedPassword = await hash(password, 12);
 
-    // Create user
-    const user = await prisma.user.create({
+    // Create new user
+    const user = await prisma.users.create({
       data: {
         name,
         email,
@@ -39,13 +47,13 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Don't return password
+    // Return the user without the password
     const { password: _, ...userWithoutPassword } = user;
-
+    
     return NextResponse.json({
       user: userWithoutPassword,
-      message: 'User registered successfully',
-    });
+      message: 'Registration successful',
+    }, { status: 201 });
   } catch (error) {
     console.error('Registration error:', error);
     return NextResponse.json(

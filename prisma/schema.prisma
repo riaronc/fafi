@@ -3,82 +3,100 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../src/lib/prisma/client"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:../fafi.db"
 }
 
-model User {
-  id             String          @id @default(cuid())
-  email          String          @unique
-  name           String?
-  password       String
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  accounts       Account[]
-  transactions   Transaction[]
-  categories     Category[]
-  budgets        Budget[]
+model users {
+  id            String        @id @default(uuid())
+  email         String        @unique
+  password      String
+  name          String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  monobankToken String?
+
+  // Relations
+  accounts      accounts[]
+  transactions  transactions[]
+  categories    categories[]
+  budgets       budgets[]
 }
 
-model Account {
-  id             String          @id @default(cuid())
-  name           String
-  type           AccountType
-  balance        Decimal         @default(0)
-  currency       String          @default("USD")
-  userId         String
-  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  transactions   Transaction[]
+model accounts {
+  id               String        @id @default(uuid())
+  name             String
+  type             AccountType
+  balance          Decimal
+  currency         String
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  // Relations
+  user             users         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           String
+  sourceTransactions      transactions[] @relation("SourceAccount")
+  destinationTransactions transactions[] @relation("DestinationAccount")
 }
 
-model Transaction {
-  id             String          @id @default(cuid())
-  amount         Decimal
-  date           DateTime
-  description    String
-  type           TransactionType
-  userId         String
-  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  accountId      String
-  account        Account         @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  categoryId     String?
-  category       Category?       @relation(fields: [categoryId], references: [id])
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+model transactions {
+  id                 String        @id @default(uuid())
+  sourceAmount       Decimal
+  destinationAmount  Decimal
+  description        String
+  date               DateTime
+  type               TransactionType
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  // Relations
+  sourceAccount      accounts?     @relation("SourceAccount", fields: [sourceAccountId], references: [id])
+  sourceAccountId    String?
+  destinationAccount accounts?     @relation("DestinationAccount", fields: [destinationAccountId], references: [id])
+  destinationAccountId String?
+  category           categories?   @relation(fields: [categoryId], references: [id])
+  categoryId         String?
+  user               users         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             String
 }
 
-model Category {
-  id             String          @id @default(cuid())
-  name           String
-  type           CategoryType
-  color          String?
-  icon           String?
-  userId         String
-  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  transactions   Transaction[]
-  budgets        Budget[]
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+model categories {
+  id          String        @id @default(uuid())
+  name        String
+  type        CategoryType
+  bgColor     String
+  fgColor     String
+  icon        String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  // Relations
+  user        users         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  transactions transactions[]
+  budgets     budgets[]
 }
 
-model Budget {
-  id             String          @id @default(cuid())
-  name           String
-  amount         Decimal
-  period         BudgetPeriod
-  startDate      DateTime
-  endDate        DateTime?
-  userId         String
-  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  categoryId     String
-  category       Category        @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+model budgets {
+  id            String        @id @default(uuid())
+  name          String
+  plannedAmount Decimal
+  actualAmount  Decimal
+  period        BudgetPeriod
+  startDate     DateTime
+  endDate       DateTime
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  // Relations
+  category      categories    @relation(fields: [categoryId], references: [id])
+  categoryId    String
+  user          users         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
 }
 
 enum AccountType {

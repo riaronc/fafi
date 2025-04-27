@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="bg-background border-b">
-        <div className="container flex h-16 items-center justify-between px-4 md:px-6">
+        <div className="container flex h-16 items-center justify-between mx-auto px-4 md:px-6">
           <div className="flex items-center gap-2">
             <span className="text-lg font-bold">FAFI</span>
           </div>
@@ -34,7 +34,7 @@ export default function Home() {
       </header>
       <main className="flex-1">
         <section className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
+          <div className="container mx-auto px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 xl:grid-cols-2">
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-2">
@@ -67,7 +67,7 @@ export default function Home() {
           </div>
         </section>
         <section className="w-full py-12 md:py-24 lg:py-32 bg-muted" id="features">
-          <div className="container px-4 md:px-6">
+          <div className="container mx-auto  px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
@@ -111,8 +111,8 @@ export default function Home() {
         </section>
       </main>
       <footer className="border-t">
-        <div className="container flex flex-col items-center justify-between gap-4 py-10 md:h-24 md:flex-row md:py-0">
-          <div className="text-center text-sm leading-loose text-muted-foreground md:text-left">
+        <div className="container  flex flex-col items-center justify-between gap-4 py-10 md:h-24 md:flex-row md:py-0">
+          <div className="text-center mx-auto  text-sm leading-loose text-muted-foreground md:text-left">
             © 2023 FAFI. All rights reserved.
           </div>
         </div>

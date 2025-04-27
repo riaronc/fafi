@@ -33,12 +33,12 @@ export async function GET(req: NextRequest) {
     const skip = (page - 1) * limit;
     
     // Get transactions with pagination
-    const transactions = await prisma.transaction.findMany({
+    const transactions = await prisma.transactions.findMany({
       where: {
         userId,
       },
       include: {
-        account: true,
+        sourceAccount: true,
         category: true,
       },
       orderBy: {
@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
     });
     
     // Get total count for pagination
-    const totalCount = await prisma.transaction.count({
+    const totalCount = await prisma.transactions.count({
       where: {
         userId,
       },
@@ -80,37 +80,54 @@ export async function POST(req: NextRequest) {
     }
     
     const body = await req.json();
-    const { amount, date, description, type, accountId, categoryId } = body;
+    const { sourceAmount, destinationAmount, date, description, type, sourceAccountId, destinationAccountId, categoryId } = body;
     
     // Validate required fields
-    if (!amount || !date || !description || !type || !accountId) {
+    if (!sourceAmount || !date || !description || !type || !sourceAccountId) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
     
     // Create transaction
-    const transaction = await prisma.transaction.create({
+    const transaction = await prisma.transactions.create({
       data: {
-        amount: parseFloat(amount),
+        sourceAmount: parseFloat(sourceAmount),
+        destinationAmount: parseFloat(destinationAmount || sourceAmount),
         date: new Date(date),
         description,
         type,
         userId,
-        accountId,
+        sourceAccountId,
+        destinationAccountId: type === 'TRANSFER' ? destinationAccountId : null,
         categoryId,
       },
     });
     
-    // Update account balance
-    await prisma.account.update({
+    // Update account balance for source account
+    await prisma.accounts.update({
       where: {
-        id: accountId,
+        id: sourceAccountId,
       },
       data: {
         balance: {
-          increment: type === 'INCOME' ? parseFloat(amount) : (type === 'EXPENSE' ? -parseFloat(amount) : 0),
+          decrement: type === 'EXPENSE' || type === 'TRANSFER' ? parseFloat(sourceAmount) : 0,
+          increment: type === 'INCOME' ? parseFloat(sourceAmount) : 0,
         },
       },
     });
+    
+    // Update destination account balance if it's a transfer
+    if (type === 'TRANSFER' && destinationAccountId) {
+      await prisma.accounts.update({
+        where: {
+          id: destinationAccountId,
+        },
+        data: {
+          balance: {
+            increment: parseFloat(destinationAmount || sourceAmount),
+          },
+        },
+      });
+    }
     
     return NextResponse.json({
       data: transaction,
