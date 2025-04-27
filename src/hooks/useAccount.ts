@@ -2,8 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import { useToast } from "@/components/ui/use-toast";
-import { useCreateAccount, useUpdateAccount } from './useAccounts';
 import { accounts as Account } from "@/lib/prisma/client";
+import { 
+  useCreateAccountMutation, 
+  useUpdateAccountMutation, 
+  useDeleteAccountMutation, 
+  useAccountsQuery,
+  type CreateAccountInput
+} from "@/services/accountsService";
+import { keepPreviousData } from "@tanstack/react-query";
 
 export interface AccountFormState {
   name: string;
@@ -19,6 +26,18 @@ export const defaultAccountForm: AccountFormState = {
   balance: 0,
   currency: "UAH",
   bankId: null
+};
+
+export const useAccount = () => {
+  const { data: accounts = [], isPending } = useAccountsQuery({
+    // Keep previous data while fetching new data
+    placeholderData: keepPreviousData,
+  });
+  
+  return {
+    accounts,
+    isLoading: isPending
+  };
 };
 
 export const useAccountForm = (onSuccess?: () => void, initialAccount?: Account) => {
@@ -48,8 +67,8 @@ export const useAccountForm = (onSuccess?: () => void, initialAccount?: Account)
     }
   }, [initialAccount]);
 
-  const { mutate: createAccount, isPending: isCreating } = useCreateAccount();
-  const { mutate: updateAccount, isPending: isUpdating } = useUpdateAccount(initialAccount?.id || "");
+  const { mutate: createAccount, isPending: isCreating } = useCreateAccountMutation();
+  const { mutate: updateAccount, isPending: isUpdating } = useUpdateAccountMutation(initialAccount?.id || "");
   
   const isSubmitting = initialAccount ? isUpdating : isCreating;
 
@@ -120,5 +139,62 @@ export const useAccountForm = (onSuccess?: () => void, initialAccount?: Account)
     resetForm,
     handleSubmit,
     isSubmitting
+  };
+};
+
+export const useDeleteAccountModal = () => {
+  const { toast } = useToast();
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [accountToDelete, setAccountToDelete] = useState<string | null>(null);
+  
+  const { mutate: deleteAccount } = useDeleteAccountMutation();
+
+  const confirmDelete = (accountId: string) => {
+    setAccountToDelete(accountId);
+    setIsConfirmOpen(true);
+  };
+
+  const cancelDelete = () => {
+    setIsConfirmOpen(false);
+    setAccountToDelete(null);
+  };
+
+  const executeDelete = (accountId?: string) => {
+    // Use provided accountId if available, otherwise use the stored accountToDelete
+    const idToDelete = accountId || accountToDelete;
+    
+    if (idToDelete) {
+      setIsDeleting(true);
+      deleteAccount(idToDelete, {
+        onSuccess: () => {
+          toast({
+            title: "Account deleted",
+            description: "Your account has been successfully deleted.",
+          });
+          setIsConfirmOpen(false);
+          setAccountToDelete(null);
+        },
+        onError: (error) => {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: error instanceof Error ? error.message : "Failed to delete account",
+          });
+        },
+        onSettled: () => {
+          setIsDeleting(false);
+        }
+      });
+    }
+  };
+
+  return {
+    isDeleting,
+    isConfirmOpen,
+    accountToDelete,
+    confirmDelete,
+    cancelDelete,
+    executeDelete
   };
 }; 

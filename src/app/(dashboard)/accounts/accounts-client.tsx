@@ -8,13 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
-import { useAccounts, useDeleteAccount } from "@/hooks/useAccounts";
-import { currencyMap, formatMonobankBalance } from "@/lib/services/monobank";
-import { formatBalance } from "@/lib/services/accounts";
+import { useAccount, useAccountForm, useDeleteAccountModal } from "@/hooks/useAccount";
+import { currencyMap, formatMonobankBalance } from "@/services/monobankService";
+import { formatBalance } from "@/services/accountsService";
 import { accounts as Account } from "@/lib/prisma/client";
-import { useAccountForm } from "@/hooks/useAccountForm";
-import { useMonobankConnection } from "@/hooks/useMonobankConnection";
+import { useMonobankConnection } from "@/hooks/useMonobank";
 import { Trash2, Edit2, CreditCard, Link } from "lucide-react";
+import { MonobankAccount } from "@/services/monobankService";
 
 interface AccountsClientProps {
   initialAccounts: Account[];
@@ -55,8 +55,12 @@ export default function AccountsClient({
   const monobank = useMonobankConnection(hasMonobankToken);
 
   // React Query hooks
-  const { data: accounts = initialAccounts, isLoading: isLoadingAccounts } = useAccounts();
-  const { mutate: deleteAccountMutation, isPending: isDeleting } = useDeleteAccount();
+  const { accounts = initialAccounts } = useAccount();
+  const { 
+    confirmDelete, 
+    executeDelete, 
+    isDeleting 
+  } = useDeleteAccountModal();
 
   // Handle opening delete dialog
   const handleOpenDeleteDialog = (accountId: string) => {
@@ -68,23 +72,9 @@ export default function AccountsClient({
   const handleDeleteAccount = () => {
     if (!deleteAccountId) return;
     
-    deleteAccountMutation(deleteAccountId, {
-      onSuccess: () => {
-        setIsDeleteDialogOpen(false);
-        setDeleteAccountId(null);
-        toast({
-          title: "Account deleted",
-          description: "Your account has been successfully deleted.",
-        });
-      },
-      onError: (error) => {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: error instanceof Error ? error.message : "Failed to delete account",
-        });
-      }
-    });
+    executeDelete(deleteAccountId);
+    setIsDeleteDialogOpen(false);
+    setDeleteAccountId(null);
   };
 
   // Handle opening edit dialog
@@ -93,7 +83,7 @@ export default function AccountsClient({
     setIsEditDialogOpen(true);
   };
 
-  const isLoading = isCreatingAccount || monobank.isLoading || isLoadingAccounts || isDeleting || isUpdatingAccount;
+  const isLoading = isCreatingAccount || monobank.isLoading || isDeleting || isUpdatingAccount;
 
   return (
     <div className="space-y-6">
@@ -277,7 +267,7 @@ export default function AccountsClient({
                   ) : monobank.monobankAccounts.length === 0 ? (
                     <div className="text-center py-4">No accounts found.</div>
                   ) : (
-                    monobank.monobankAccounts.map((account) => (
+                    Array.isArray(monobank.monobankAccounts) && monobank.monobankAccounts.map((account: MonobankAccount) => (
                       <div key={account.id} className="flex items-start space-x-3 border p-3 rounded-md">
                         <Checkbox
                           id={account.id}
@@ -285,6 +275,7 @@ export default function AccountsClient({
                           onCheckedChange={(checked) => 
                             monobank.toggleAccountSelection(account.id, !!checked)
                           }
+                          disabled={monobank.existingAccountIds.has(account.id)}
                         />
                         <div className="space-y-1">
                           <Label 
@@ -352,7 +343,7 @@ export default function AccountsClient({
 
       {/* Accounts Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {isLoadingAccounts ? (
+        {accounts.length === 0 && isLoading ? (
           <div className="col-span-full text-center py-12 text-muted-foreground">
             Loading accounts...
           </div>
@@ -361,54 +352,63 @@ export default function AccountsClient({
             No accounts found. Add an account to get started.
           </div>
         ) : (
-          accounts.map((account) => (
-            <Card key={account.id} className="overflow-hidden">
-              <CardHeader className="pb-2">
-                <div className="flex justify-between items-start">
-                  <div className="truncate mr-2">
-                    <h3 className="font-semibold text-lg">{account.name}</h3>
-                    <p className="text-sm text-muted-foreground">{account.type}</p>
-                    {account.bankId && (
-                      <div className="flex items-center mt-1 text-xs text-muted-foreground">
-                        <Link className="h-3 w-3 mr-1" />
-                        <span>Connected to bank</span>
-                      </div>
-                    )}
+          <>
+            {accounts.map((account: Account) => (
+              <Card key={account.id} className="overflow-hidden">
+                <CardHeader className="pb-2">
+                  <div className="flex justify-between items-start">
+                    <div className="truncate mr-2">
+                      <h3 className="font-semibold text-lg">{account.name}</h3>
+                      <p className="text-sm text-muted-foreground">{account.type}</p>
+                      {account.bankId && (
+                        <div className="flex items-center mt-1 text-xs text-muted-foreground">
+                          <Link className="h-3 w-3 mr-1" />
+                          <span>Connected to bank</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="font-medium">{account.currency}</p>
+                      {account.bankId && (
+                        <CreditCard className="h-4 w-4 ml-auto mt-1 text-primary" />
+                      )}
+                    </div>
                   </div>
-                  <div className="text-right shrink-0">
-                    <p className="font-medium">{account.currency}</p>
-                    {account.bankId && (
-                      <CreditCard className="h-4 w-4 ml-auto mt-1 text-primary" />
-                    )}
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{formatBalance(account.balance, account.currency)}</div>
+                  <div className="text-xs text-muted-foreground mt-2">
+                    Last updated: {new Date(account.updatedAt).toLocaleString()}
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{formatBalance(account.balance, account.currency)}</div>
-                <div className="text-xs text-muted-foreground mt-2">
-                  Last updated: {new Date(account.updatedAt).toLocaleString()}
-                </div>
-              </CardContent>
-              <CardFooter className="flex justify-end gap-2 pt-0">
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-8 w-8 text-primary opacity-70 hover:opacity-100"
-                  onClick={() => handleOpenEditDialog(account)}
-                >
-                  <Edit2 className="h-4 w-4" />
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-8 w-8 text-destructive opacity-70 hover:opacity-100"
-                  onClick={() => handleOpenDeleteDialog(account.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </CardFooter>
-            </Card>
-          ))
+                </CardContent>
+                <CardFooter className="flex justify-end gap-2 pt-0">
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8 text-primary opacity-70 hover:opacity-100"
+                    onClick={() => handleOpenEditDialog(account)}
+                    disabled={isLoading}
+                  >
+                    <Edit2 className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8 text-destructive opacity-70 hover:opacity-100"
+                    onClick={() => handleOpenDeleteDialog(account.id)}
+                    disabled={isLoading}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+            {isLoading && (
+              <div className="fixed bottom-4 right-4 bg-primary text-primary-foreground px-4 py-2 rounded-md shadow-lg">
+                Updating accounts...
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
