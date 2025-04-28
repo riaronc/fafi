@@ -1,28 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { verify } from 'jsonwebtoken';
+import { PrismaClient } from '@/lib/prisma/client';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 
-// Helper function to get user ID from token
-async function getUserIdFromToken(req: NextRequest) {
-  const token = req.cookies.get('token')?.value;
-  
-  if (!token) {
-    return null;
-  }
-  
-  try {
-    const decoded = verify(token, process.env.JWT_SECRET || 'fallback_secret_key_change_in_production') as { id: string };
-    return decoded.id;
-  } catch (error) {
-    return null;
-  }
-}
+const prisma = new PrismaClient();
 
 // GET - Fetch all transactions for the authenticated user
 export async function GET(req: NextRequest) {
   try {
-    const userId = await getUserIdFromToken(req);
-    
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
+
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -73,7 +61,8 @@ export async function GET(req: NextRequest) {
 // POST - Create a new transaction
 export async function POST(req: NextRequest) {
   try {
-    const userId = await getUserIdFromToken(req);
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
     
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

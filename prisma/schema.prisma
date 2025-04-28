@@ -51,6 +51,7 @@ model transactions {
   description        String
   date               DateTime
   type               TransactionType
+  bankTransactionId  String?       @unique
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @updatedAt
 
