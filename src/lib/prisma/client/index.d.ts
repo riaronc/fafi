@@ -65,7 +65,8 @@ export type TransactionType = (typeof TransactionType)[keyof typeof TransactionT
 
 export const CategoryType: {
   INCOME: 'INCOME',
-  EXPENSE: 'EXPENSE'
+  EXPENSE: 'EXPENSE',
+  BOTH: 'BOTH'
 };
 
 export type CategoryType = (typeof CategoryType)[keyof typeof CategoryType]

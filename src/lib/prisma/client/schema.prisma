@@ -117,6 +117,7 @@ enum TransactionType {
 enum CategoryType {
   INCOME
   EXPENSE
+  BOTH
 }
 
 enum BudgetPeriod {

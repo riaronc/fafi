@@ -50,9 +50,9 @@ export function Sidebar({ className }: SidebarProps) {
       {/* Sidebar */}
       <div 
         className={cn(
-          "pb-12 w-64 border-r h-screen flex flex-col fixed top-0 left-0 z-40 bg-background transition-transform duration-300 lg:translate-x-0",
+          "pb-4 w-64 border-r h-screen flex flex-col fixed top-0 left-0 z-40 bg-background transition-transform duration-300 lg:translate-x-0",
           isOpen ? "translate-x-0" : "-translate-x-full",
-          "lg:relative lg:h-screen",
+          "lg:relative h-screen",
           className
         )}
       >

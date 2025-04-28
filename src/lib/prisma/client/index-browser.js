@@ -202,7 +202,8 @@ exports.TransactionType = exports.$Enums.TransactionType = {
 
 exports.CategoryType = exports.$Enums.CategoryType = {
   INCOME: 'INCOME',
-  EXPENSE: 'EXPENSE'
+  EXPENSE: 'EXPENSE',
+  BOTH: 'BOTH'
 };
 
 exports.BudgetPeriod = exports.$Enums.BudgetPeriod = {
