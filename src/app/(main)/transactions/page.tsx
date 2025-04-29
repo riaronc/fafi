@@ -519,7 +519,7 @@ export default function TransactionsPageClient() {
          )}
         
          {/* Table */}
-        <Card className="flex-1 overflow-hidden relative border shadow-sm rounded-lg">
+        <Card className="flex-1 overflow-hidden relative border shadow-sm rounded-lg py-0">
           {transactionsQuery.isFetching && (
             <div className="absolute inset-0 bg-background/80 flex items-center justify-center z-10">
                 <LoadingSpinner size="lg" />
