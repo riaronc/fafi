@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Check, ChevronsUpDown, X, CircleHelp } from "lucide-react";
-
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import {
@@ -94,8 +94,23 @@ export function CategoryChangeDialog({
          }
     }, [isOpen, suggestionsResult, transactionId]);
 
-    const allCategories = useMemo(() => categoriesResult?.success ? categoriesResult.data : [], [categoriesResult]);
-    const suggestedCategories = useMemo(() => suggestionsResult?.success ? suggestionsResult.data : [], [suggestionsResult]);
+    // Memoize separated suggestions
+    const { currentCategory, otherSuggestions } = useMemo(() => {
+        const allSugg = suggestionsResult?.success ? suggestionsResult.data : [];
+        const current = allSugg.find(s => s.source === 'current');
+        const others = allSugg.filter(s => s.source !== 'current');
+        return { currentCategory: current, otherSuggestions: others };
+    }, [suggestionsResult]);
+
+    // Memoize all categories excluding *all* suggestions (current and others)
+    const filteredAllCategories = useMemo(() => {
+        const allCats = categoriesResult?.success ? categoriesResult.data : [];
+        const suggestionIds = new Set([
+            ...(currentCategory ? [currentCategory.id] : []),
+            ...otherSuggestions.map(s => s.id)
+        ]);
+        return allCats.filter(cat => !suggestionIds.has(cat.id));
+    }, [categoriesResult, currentCategory, otherSuggestions]);
 
     const isLoading = isLoadingCategories || isLoadingSuggestions;
     const isSaving = updateMutation.isPending;
@@ -121,47 +136,60 @@ export function CategoryChangeDialog({
                         <LoadingSpinner />
                     </div>
                 ) : !hasError ? (
-                    <div className="grid gap-4 py-1">
-                        {/* Suggestions Section */} 
-                        {suggestedCategories.length > 0 && (
-                             <div className="space-y-1">
-                                <Label className="text-xs text-muted-foreground pl-1 pb-2">Suggestions</Label>
-                                <RadioGroup
-                                    className="flex gap-3"
-                                    value={selectedCategoryId ?? "__NULL__"} // Handle null selection for RadioGroup
-                                    onValueChange={(value) => setSelectedCategoryId(value === "__NULL__" ? null : value)}
+                    <RadioGroup
+                        value={selectedCategoryId ?? "__NULL__"}
+                        onValueChange={(value) => setSelectedCategoryId(value === "__NULL__" ? null : value)}
+                        className="grid gap-4 py-1"
+                    >
+                        {/* Current Category Section (if exists) */} 
+                        {currentCategory && (
+                            <div className="space-y-1">
+                                <Label className="text-xs text-muted-foreground pl-1 pb-2">Current Category</Label>
+                                <Label 
+                                    key={currentCategory.id} 
+                                    htmlFor={`cat-${currentCategory.id}-curr`} 
+                                    className="flex flex-1 items-center space-x-2 py-2 px-2 rounded-md border border-transparent hover:border-border cursor-pointer has-[input:checked]:ring-2 has-[input:checked]:ring-primary"
                                 >
-                                    {suggestedCategories.map((suggestion) => (
+                                    <RadioGroupItem value={currentCategory.id} id={`cat-${currentCategory.id}-curr`} className="sr-only"/>
+                                    <CategoryItem category={currentCategory} />
+                                    {/* Consider adding a badge or different style if needed */} 
+                                </Label>
+                            </div>
+                        )}
+
+                        {/* Suggestions Section (only if *other* suggestions exist) */} 
+                        {otherSuggestions.length > 0 && (
+                            <div className="space-y-1">
+                                <Label className="text-xs text-muted-foreground pl-1 pb-2">Suggestions</Label>
+                                <div className="flex gap-3"> {/* Horizontal layout */} 
+                                    {otherSuggestions.map((suggestion) => (
                                         <Label 
                                             key={suggestion.id} 
                                             htmlFor={`cat-${suggestion.id}-sugg`} 
-                                            className="flex flex-1 items-center space-x-2 py-2 px-2 rounded-md border border-transparent hover:border-border cursor-pointer has-[input:checked]:border-primary"
+                                            className="flex flex-1 items-center space-x-2 py-2 px-2 rounded-md border border-transparent hover:border-border cursor-pointer has-[input:checked]:ring-2 has-[input:checked]:ring-primary"
                                         >
                                             <RadioGroupItem value={suggestion.id} id={`cat-${suggestion.id}-sugg`} className="sr-only"/>
                                             <CategoryItem category={suggestion} />
                                              <Badge variant="secondary" className="text-xs ml-auto">{suggestion.source}</Badge>
                                         </Label>
                                     ))}
-                                </RadioGroup>
+                                </div>
                             </div>
                         )}
 
-                         <Separator />
+                         {/* Separator if current or suggestions were shown */} 
+                         {(currentCategory || otherSuggestions.length > 0) && <Separator />} 
 
                         {/* All Categories Section */} 
                          <div className="space-y-1">
                              <Label className="text-xs text-muted-foreground pl-1 pb-2">All Categories</Label>
                              <ScrollArea className="h-56 w-full">
-                                <RadioGroup
-                                     value={selectedCategoryId ?? "__NULL__"}
-                                     onValueChange={(value) => setSelectedCategoryId(value === "__NULL__" ? null : value)}
-                                     className="grid grid-cols-3 sm:grid-cols-4 gap-2 "
-                                 >
+                                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 ">
                                     {/* Option to Uncategorize */} 
                                     <Label 
                                         key="uncategorize" 
                                         htmlFor={`cat-null`} 
-                                        className="flex flex-col items-center justify-center p-2 rounded-md border border-transparent hover:border-border cursor-pointer has-[input:checked]:border-primary has-[input:checked]:bg-muted  text-center"
+                                        className="flex flex-col items-center justify-center p-2 rounded-md border border-transparent hover:border-border cursor-pointer has-[input:checked]:ring-2 has-[input:checked]:ring-primary text-center"
                                     >
                                         <RadioGroupItem value={"__NULL__"} id={`cat-null`} className="sr-only"/>
                                         <CircleHelp className="w-4 h-4 text-muted-foreground" />
@@ -170,23 +198,21 @@ export function CategoryChangeDialog({
                                          </span>
                                      </Label>
 
-                                    {/* Rest of categories */} 
-                                    {allCategories
-                                        .filter(cat => !suggestedCategories.some(s => s.id === cat.id)) 
-                                        .map((category) => (
-                                            <Label 
-                                                key={category.id} 
-                                                htmlFor={`cat-${category.id}`} 
-                                                className={`flex flex-col justify-between items-center space-x-2 py-2 px-2 rounded-md border border-transparent hover:border-border min-h-[50px] cursor-pointer has-[input:checked]:border-primary bg-[${category.bgColor}]`}
-                                            >
-                                                <RadioGroupItem value={category.id} id={`cat-${category.id}`} className="sr-only"/>
-                                                <CategoryItem category={category} />
-                                            </Label>
+                                    {/* Rest of categories (use filtered list) */} 
+                                    {filteredAllCategories.map((category) => (
+                                        <Label 
+                                            key={category.id} 
+                                            htmlFor={`cat-${category.id}`} 
+                                            className={`flex flex-col justify-between items-center space-x-2 py-2 px-2 rounded-md border border-transparent hover:border-border min-h-[50px] cursor-pointer has-[input:checked]:ring-2 has-[input:checked]:ring-primary bg-[${category.bgColor}]`}
+                                        >
+                                            <RadioGroupItem value={category.id} id={`cat-${category.id}`} className="sr-only"/>
+                                            <CategoryItem category={category} />
+                                        </Label>
                                     ))}
-                                </RadioGroup>
+                                </div>
                              </ScrollArea>
                         </div>
-                    </div>
+                    </RadioGroup>
                 ) : (
                      <div className="text-center py-10 text-muted-foreground">
                          Could not load categories.

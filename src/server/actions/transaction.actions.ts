@@ -341,12 +341,16 @@ type UpdateCategoryResult =
   | { success: false; error: string };
 
 const updateCategorySchema = z.object({
-    categoryId: z.string().cuid().nullable(), // Allow null to uncategorize
+    categoryId: z.string().uuid().nullable(), // Changed from cuid() to uuid()
 });
 
 async function updateTransactionCategory(transactionId: string, input: { categoryId: string | null }): Promise<UpdateCategoryResult> {
     try {
         const userId = await getAuthenticatedUserId();
+
+        // --- DEBUG LOGGING --- 
+        console.log("updateTransactionCategory received input:", JSON.stringify(input, null, 2));
+        // --- END DEBUG LOGGING ---
 
         // Validate input
         const validationResult = updateCategorySchema.safeParse(input);
@@ -369,7 +373,10 @@ async function updateTransactionCategory(transactionId: string, input: { categor
         await prisma.transactions.update({
             where: { id: transactionId, userId }, // Ensure user owns transaction
             data: {
-                categoryId: categoryId,
+                // Use connect/disconnect for the relation instead of setting FK directly
+                category: categoryId 
+                    ? { connect: { id: categoryId } } 
+                    : { disconnect: true },
             },
         });
 
