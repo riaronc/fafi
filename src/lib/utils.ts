@@ -8,10 +8,8 @@ export function cn(...inputs: ClassValue[]) {
 // Format balance (convert from minor units/cents to major)
 export const formatBalance = (balance: number, currency: string): string => {
   // Use a default locale if navigator is not available (e.g., during SSR)
-  const locale = typeof navigator !== 'undefined' ? navigator.language : "en-US"; 
+  const locale = typeof navigator !== 'undefined' ? navigator.language : "uk-UA"; 
   const formatter = new Intl.NumberFormat(locale || "en-US", {
-    style: "currency",
-    currency: currency,
     minimumFractionDigits: 2,
   });
   
@@ -24,15 +22,15 @@ export const formatBalance = (balance: number, currency: string): string => {
 // Currency code mapping (used by formatMonobankBalance)
 // Consider moving this to lib/constants.ts if used elsewhere
 export const currencyMap: Record<number, string> = {
-  980: "UAH",
-  840: "USD",
-  978: "EUR",
+  980: "₴",
+  840: "$",
+  978: "€",
 };
 
 // Format monobank balance
 export const formatMonobankBalance = (balance: number, currencyCode: number): string => {
   const locale = typeof navigator !== 'undefined' ? navigator.language : "en-US";
-  const currency = currencyMap[currencyCode] || "UAH"; // Default or lookup
+  const currency = currencyMap[currencyCode] || "₴"; // Default or lookup
   const formatter = new Intl.NumberFormat(locale || "en-US", {
     style: "currency",
     currency: currency,

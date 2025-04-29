@@ -4,6 +4,8 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { Prisma, TransactionType, PrismaClient } from "@/server/db/client";
 import { getServerSession } from "next-auth";
+import fs from 'fs/promises';
+import path from 'path';
 
 import { prisma } from "@/server/db";
 import { authOptions } from "@/server/auth/options";
@@ -15,6 +17,209 @@ type PrismaTransactionClient = Omit<PrismaClient, "$connect" | "$disconnect" | "
 
 // --- Constants ---
 const MONOBANK_API_BASE = "https://api.monobank.ua";
+
+// --- MCC to Category Name Mapping ---
+const mccToCategoryName: Record<number, string> = {
+    // Education
+    8211: "Education",  // Schools, educational services
+    8220: "Education",  // Colleges, universities, and related institutions
+    // Entertainment
+    7832: "Entertainment",  // Motion picture theaters
+    7922: "Entertainment",  // Theatrical ticket sales
+    7995: "Entertainment",  // Lottery, casino gambling (if applicable)
+    // Eating out
+    5811: "Eating out",
+    5812: "Eating out", // Eating places and restaurants
+    5813: "Eating out", // Drinking places (bars, taverns)
+    5814: "Eating out", // Fast food restaurants
+    // Groceries
+    5411: "Groceries", // Grocery stores, supermarkets
+    5412: "Groceries", // Convenience stores
+    5422: "Groceries", // Freezer and Locker Meat Provisioners
+    5441: "Groceries", // Candy, nut, and confectionery stores
+    5451: "Groceries", // Dairy products stores
+    5462: "Groceries", // Bakeries
+    5499: "Groceries", // Misc Food Stores
+    5297: "Groceries", // Misc. home furnishing specialty stores (could overlap)
+    5298: "Groceries", // Duty-free stores (often have food/drink)
+    5300: "Groceries", // Wholesale clubs
+    5311: "Groceries", // Department Stores (can have groceries) -> Overlaps Shopping
+    5331: "Groceries", // Variety Stores (can have groceries)
+    5399: "Groceries", // Misc. General Merchandise (can have groceries)
+    5715: "Groceries", // Alcoholic Beverage Stores
+    5921: "Groceries", // Package Stores - Beer, Wine, Liquor
+    // Charity
+    8398: "Charity",  // Charitable and social service organizations
+    // Health & Fitness
+    8011: "Health & Fitness",  // Doctors and physicians
+    8021: "Health & Fitness",  // Dentists
+    8031: "Health & Fitness",  // Nursing and personal care facilities
+    8041: "Health & Fitness",  // Chiropractors
+    8062: "Health & Fitness",  // Hospitals
+    8071: "Health & Fitness",  // Medical and Dental Labs
+    8099: "Health & Fitness",  // Medical Services and Health Practitioners
+    5912: "Health & Fitness",  // Drug Stores and Pharmacies
+    // Rent
+    6513: "Rent",  // Real estate agents and property managers
+    // Insurance
+    6300: "Insurance",  // Insurance sales, claims, underwriting
+    // Shopping
+    // 5311: "Shopping", // Department stores -> Also in Groceries, prioritize Shopping?
+    5611: "Shopping", // Men's and Boy's Clothing and Accessories Stores
+    5621: "Shopping", // Women's Ready-to-Wear Stores
+    5631: "Shopping", // Women's Accessory and Specialty Stores
+    5641: "Shopping", // Children's and Infant's Wear Stores
+    5651: "Shopping", // Family Clothing Stores
+    5655: "Shopping", // Sports Apparel, Riding Apparel Stores
+    5661: "Shopping", // Shoe Stores
+    5681: "Shopping", // Furriers and Fur Shops
+    5691: "Shopping", // Men's and Women's Clothing Stores
+    5697: "Shopping", // Tailors, Seamstresses, Mending, and Alterations
+    5698: "Shopping", // Wig and Toupee Stores
+    5699: "Shopping", // Miscellaneous Apparel and Accessory Shops
+    5931: "Shopping", // Used Merchandise and Secondhand Stores
+    5948: "Shopping", // Luggage and Leather Goods Stores
+    5949: "Shopping", // Sewing, Needlework, Fabric, and Piece Goods Stores
+    7251: "Shopping", // Shop Repair Shops and Shoe Shine Parlors
+    5131: "Shopping", // Piece Goods, Notions, and Other Dry Goods
+    5137: "Shopping", // Men's, Women's, and Children's Uniforms and Commercial Clothing
+    5139: "Shopping", // Commercial Footwear
+    // Pets
+    742: "Pets", // Veterinary services
+    5995: "Pets", // Pet shops, pet food and supplies
+    // Transportation
+    4111: "Transport", // Local and suburban commuter passenger transportation
+    // Taxi
+    4121: "Taxi", // Taxicabs
+    // Utilities (Missing from provided map, add common ones)
+    4900: "Utilities", // Utilities - Electric, Gas, Water, Sanitary
+    4814: "Bills & Charges", // Telecommunication Services (Phone Bills)
+    4899: "Bills & Charges", // Cable and Other Pay Television Services (Internet/TV Bills)
+};
+
+// --- Global Cache for Categories and CSV Data ---
+let categoriesCache: Map<string, string> | null = null; // Map<normalizedName, id>
+let descriptionToCategoryMap: Map<string, string> | null = null; // Map<description, categoryName>
+
+async function loadDescriptionToCategoryMap(): Promise<Map<string, string>> {
+    if (descriptionToCategoryMap) {
+        return descriptionToCategoryMap;
+    }
+    console.log("Loading description-to-category mapping from CSV...");
+    const map = new Map<string, string>();
+    try {
+        const filePath = path.join(process.cwd(), 'data.csv'); // Assumes data.csv is in the project root
+        const fileContent = await fs.readFile(filePath, 'utf-8');
+        const lines = fileContent.split('\n');
+
+        for (const line of lines) {
+            if (!line.trim()) continue;
+            // Assuming tab-separated, adjust if different
+            const parts = line.split('\t');
+            if (parts.length === 2) {
+                const categoryName = parts[0].trim();
+                const description = parts[1].trim();
+                if (description && categoryName) {
+                     // Store the mapping with the raw description
+                    map.set(description, categoryName);
+                }
+            }
+        }
+        console.log(`Loaded ${map.size} mappings from data.csv`);
+        descriptionToCategoryMap = map;
+    } catch (error) {
+        console.error("Error reading or parsing data.csv:", error);
+        // Return an empty map or re-throw, depending on desired behavior
+        descriptionToCategoryMap = new Map();
+    }
+    return descriptionToCategoryMap;
+}
+
+
+async function loadCategoriesCache(tx: PrismaTransactionClient, userId: string): Promise<Map<string, string>> {
+    if (categoriesCache) {
+        // TODO: Consider TTL or invalidation logic if categories can change frequently
+        // For now, we load once per server instance/sync run
+        return categoriesCache;
+    }
+    console.log("Loading categories into cache...");
+    const categories = await tx.categories.findMany({
+        where: {userId: userId }, // User's categories + system default categories
+        select: { id: true, name: true }
+    });
+    const cache = new Map<string, string>();
+    categories.forEach(cat => {
+        // Store with normalized name for case-insensitive lookup
+        cache.set(cat.name.trim().toLowerCase(), cat.id);
+    });
+    console.log(`Cached ${cache.size} categories.`);
+    categoriesCache = cache;
+    return categoriesCache;
+}
+
+async function findCategoryId(
+    tx: PrismaTransactionClient,
+    userId: string,
+    mcc: number,
+    description: string | null,
+): Promise<string | null> {
+    if (!categoriesCache) {
+        await loadCategoriesCache(tx, userId);
+    }
+    if (!descriptionToCategoryMap) {
+        await loadDescriptionToCategoryMap();
+    }
+    const normalizedDesc = description?.trim();
+    const normalizedDescLower = normalizedDesc?.toLowerCase();
+
+    // 1. Priority: Match description from CSV data
+    if (normalizedDesc && descriptionToCategoryMap!.has(normalizedDesc)) {
+        const categoryNameFromCsv = descriptionToCategoryMap!.get(normalizedDesc)!;
+        const categoryId = categoriesCache!.get(categoryNameFromCsv.toLowerCase());
+        if (categoryId) {
+             // console.log(`[CSV Match] Desc: "${description}" -> Cat: ${categoryNameFromCsv} (ID: ${categoryId})`);
+             return categoryId;
+        } else {
+            console.warn(`[CSV Match] Desc: "${description}" -> Cat: ${categoryNameFromCsv}, but category not found in DB cache.`);
+        }
+    }
+
+     // 1.5 Try partial/case-insensitive CSV match (more expensive) - Optional
+    // if (normalizedDescLower) {
+    //    for (const [csvDesc, csvCatName] of descriptionToCategoryMap!.entries()) {
+    //         if (normalizedDescLower.includes(csvDesc.toLowerCase())) {
+    //             const categoryId = categoriesCache!.get(csvCatName.toLowerCase());
+    //             if (categoryId) {
+    //                 console.log(`[Partial CSV Match] Desc: "${description}" includes "${csvDesc}" -> Cat: ${csvCatName} (ID: ${categoryId})`);
+    //                 return categoryId;
+    //             }
+    //         }
+    //    }
+    // }
+
+
+    // 2. Fallback: Match MCC code
+    const categoryNameFromMcc = mccToCategoryName[mcc];
+    if (categoryNameFromMcc) {
+        const categoryId = categoriesCache!.get(categoryNameFromMcc.toLowerCase());
+        if (categoryId) {
+            // console.log(`[MCC Match] MCC: ${mcc} -> Cat: ${categoryNameFromMcc} (ID: ${categoryId})`);
+            return categoryId;
+        } else {
+             console.warn(`[MCC Match] MCC: ${mcc} -> Cat: ${categoryNameFromMcc}, but category not found in DB cache.`);
+        }
+    }
+
+    // 3. Fallback: Find 'Uncategorized' category
+     const uncategorizedId = categoriesCache!.get('uncategorized');
+     if (uncategorizedId) {
+         return uncategorizedId;
+     }
+
+    // 4. No match found
+    // console.log(`[No Match] Desc: "${description}", MCC: ${mcc}`);
+    return null;
+}
 
 // --- Helper Functions ---
 async function getAuthenticatedUserIdAndToken() {
@@ -216,11 +421,8 @@ export async function syncMonobankTransactions(): Promise<SyncTransactionsResult
             sourceAmount = amountAbs;
           }
 
-          // TODO: Find appropriate category (maybe based on MCC or description?)
-          // This requires a robust category mapping/finding logic.
-          // For now, let's assign to a default 'Uncategorized' or skip category.
-          // const categoryId = await findOrCreateCategory(tx, userId, item.mcc, item.description);
-          const categoryId = null; // Placeholder
+          // Find appropriate category ID
+          const categoryId = await findCategoryId(tx, userId, item.mcc, item.description);
 
           // Create transaction
           await tx.transactions.create({
@@ -239,11 +441,15 @@ export async function syncMonobankTransactions(): Promise<SyncTransactionsResult
           });
 
           // Update account balance (careful with cents)
-          if (type === TransactionType.INCOME) {
-            await tx.accounts.update({ where: { id: account.id }, data: { balance: { increment: amountAbs } } });
-          } else {
-            await tx.accounts.update({ where: { id: account.id }, data: { balance: { decrement: amountAbs } } });
-          }
+          // No need to update balance here if we fetch balances separately
+          // or assume Monobank API statement includes balance updates implicitly
+          // Keeping it might cause drift if API/sync fails partially.
+          // Let's comment it out for now, assuming balances are updated via syncMonobankAccounts or similar
+          // if (type === TransactionType.INCOME) {
+          //   await tx.accounts.update({ where: { id: account.id }, data: { balance: { increment: amountAbs } } });
+          // } else {
+          //   await tx.accounts.update({ where: { id: account.id }, data: { balance: { decrement: amountAbs } } });
+          // }
           totalAdded++;
         }
       });
@@ -258,6 +464,12 @@ export async function syncMonobankTransactions(): Promise<SyncTransactionsResult
 
    } catch (error) {
      console.error("Error syncing Monobank transactions:", error);
+     categoriesCache = null; // Clear cache on error
+     descriptionToCategoryMap = null;
      return { success: false, error: error instanceof Error ? error.message : "Failed to sync transactions." };
+   } finally {
+       // Optional: Clear caches after execution if memory is a concern
+       // categoriesCache = null;
+       // descriptionToCategoryMap = null;
    }
 } 

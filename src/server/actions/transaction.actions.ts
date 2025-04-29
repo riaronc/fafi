@@ -336,11 +336,16 @@ export async function updateTransaction(transactionId: string, input: unknown): 
 }
 
 // --- DELETE TRANSACTION ---
-type DeleteTransactionResult = 
+// Define the result type for deletion
+type DeleteActionResult = 
   | { success: true }
   | { success: false; error: string };
 
-export async function deleteTransaction(transactionId: string): Promise<DeleteTransactionResult> {
+// Export the type for use in the hook
+export type { DeleteActionResult };
+
+// Action to delete a transaction
+export async function deleteTransaction(transactionId: string): Promise<DeleteActionResult> {
   try {
     const userId = await getAuthenticatedUserId();
 

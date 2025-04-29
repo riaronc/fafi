@@ -27,4 +27,9 @@ export type TableTransaction = {
   // Add other fields needed directly for display
 };
 
+// Extended type for table rows that includes a flag for showing the date separator
+export type TableTransactionWithDateSeparator = TableTransaction & {
+  showDateSeparator: boolean;
+};
+
 // Add other specific view model types as needed... 
