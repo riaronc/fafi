@@ -1,4 +1,4 @@
-import { PrismaClient, CategoryType } from '@prisma/client';
+import { PrismaClient, CategoryType } from '@/server/db/client';
 import { v4 as uuidv4 } from 'uuid';
 
 const prisma = new PrismaClient();

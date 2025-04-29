@@ -1,10 +1,10 @@
-import NextAuth from "next-auth";
+import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
-import { prisma } from "@/server/db";
+// Update this import path after moving prisma
+import { prisma } from "@/server/db"; 
 
-// Create the NextAuth handler
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       id: "credentials",
@@ -67,6 +67,4 @@ const handler = NextAuth({
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   secret: process.env.NEXTAUTH_SECRET || "fallback_secret_key_change_in_production",
-});
-
-export { handler as GET, handler as POST }; 
+}; 

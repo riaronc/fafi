@@ -1,0 +1,134 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  // Updated output path to be relative to this schema location
+  output   = "./client" 
+}
+
+datasource db {
+  provider = "sqlite"
+  // Adjust the DB path relative to the new schema location
+  url      = "file:./fafi.db" // This goes up 4 levels (db, server, src, root) to find the DB in the root
+}
+
+model users {
+  id            String        @id @default(uuid())
+  email         String        @unique
+  password      String
+  name          String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  monobankToken String?
+
+  // Relations
+  accounts      accounts[]
+  transactions  transactions[]
+  categories    categories[]
+  budgets       budgets[]
+}
+
+model accounts {
+  id               String        @id @default(uuid())
+  name             String
+  type             AccountType
+  balance          Int           // Changed from Decimal to Int, storing cents
+  currency         String
+  bankId           String?       // ID of the account from the bank (e.g., Monobank)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  // Relations
+  user             users         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           String
+  sourceTransactions      transactions[] @relation("SourceAccount")
+  destinationTransactions transactions[] @relation("DestinationAccount")
+
+  // Add composite unique constraint for user + bankId
+  @@unique([userId, bankId])
+}
+
+model transactions {
+  id                 String        @id @default(uuid())
+  sourceAmount       Int           // Changed from Decimal to Int, storing cents
+  destinationAmount  Int           // Changed from Decimal to Int, storing cents
+  description        String
+  date               DateTime
+  type               TransactionType
+  bankTransactionId  String?       @unique
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  // Relations
+  sourceAccount      accounts?     @relation("SourceAccount", fields: [sourceAccountId], references: [id])
+  sourceAccountId    String?
+  destinationAccount accounts?     @relation("DestinationAccount", fields: [destinationAccountId], references: [id])
+  destinationAccountId String?
+  category           categories?   @relation(fields: [categoryId], references: [id])
+  categoryId         String?
+  user               users         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             String
+}
+
+model categories {
+  id          String        @id @default(uuid())
+  name        String
+  type        CategoryType
+  bgColor     String
+  fgColor     String
+  icon        String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  // Relations
+  user        users         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  transactions transactions[]
+  budgets     budgets[]
+}
+
+model budgets {
+  id            String        @id @default(uuid())
+  name          String
+  plannedAmount Int           // Changed from Decimal to Int, storing cents
+  actualAmount  Int           // Changed from Decimal to Int, storing cents
+  period        BudgetPeriod
+  startDate     DateTime
+  endDate       DateTime
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  // Relations
+  category      categories    @relation(fields: [categoryId], references: [id])
+  categoryId    String
+  user          users         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+}
+
+enum AccountType {
+  CHECKING
+  SAVINGS
+  CREDIT
+  INVESTMENT
+  CASH
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+  TRANSFER
+}
+
+enum CategoryType {
+  INCOME
+  EXPENSE
+  BOTH
+}
+
+enum BudgetPeriod {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+} 
