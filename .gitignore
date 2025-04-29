@@ -10,6 +10,8 @@
 !.yarn/releases
 !.yarn/versions
 
+./src/server/db/fafi.db
+
 # testing
 /coverage
 
