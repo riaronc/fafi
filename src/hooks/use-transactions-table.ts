@@ -15,6 +15,7 @@ import {
   getTransactions, 
   deleteTransaction,
   DeleteActionResult, // Import result type
+  updateTransactionCategory // Import the specific update action
 } from "@/server/actions/transaction.actions";
 import { syncMonobankTransactions } from "@/server/actions/monobank.actions";
 import { TableTransaction, TableTransactionWithDateSeparator } from "@/types/entities";
@@ -64,6 +65,8 @@ export function useTransactionsTable() {
   const pagination = useMemo(() => ({ pageIndex, pageSize }), [pageIndex, pageSize]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [globalFilter, setGlobalFilter] = useState(''); // For description search
+  // State for category editing dialog
+  const [editingTransactionId, setEditingTransactionId] = useState<string | null>(null);
 
   // Server Filters Transformation
   const serverFilters = useMemo(() => {
@@ -122,17 +125,6 @@ export function useTransactionsTable() {
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  // --- DEBUG LOGGING START ---
-  useEffect(() => {
-    console.log("Transactions Query Result:", transactionsQuery.data);
-    console.log("Query Status:", {
-        isLoading: transactionsQuery.isLoading,
-        isFetching: transactionsQuery.isFetching,
-        isError: transactionsQuery.isError,
-        error: transactionsQuery.error,
-    });
-  }, [transactionsQuery.data, transactionsQuery.isLoading, transactionsQuery.isFetching, transactionsQuery.isError, transactionsQuery.error]);
-  // --- DEBUG LOGGING END ---
 
   const rawTransactions: TransactionFromServer[] = transactionsQuery.data?.success
     ? (transactionsQuery.data.data as unknown as TransactionFromServer[])
@@ -169,12 +161,8 @@ export function useTransactionsTable() {
         currency: tx.sourceAccount?.currency || tx.destinationAccount?.currency || 'USD',
       };
 
-      // --- DEBUG LOGGING START ---
-      console.log("Transformed Table Data (tableData):", txData);
-      // --- DEBUG LOGGING END ---
       return txData;
     });
-    console.log("Flat Transformed Table Data:", transformed);
     return transformed;
   }, [rawTransactions]);
 
@@ -192,7 +180,6 @@ export function useTransactionsTable() {
     });
   }, [flatTableData]);
   
-  console.log("Flat Data with Separators:", flatDataWithSeparators);
 
   // Delete Mutation
   const deleteMutation = useMutation({
@@ -244,6 +231,11 @@ export function useTransactionsTable() {
     syncMutation.mutate();
   }, [syncMutation]);
 
+  // Handler to open/close the category dialog
+  const handleCategoryIconClick = useCallback((transactionId: string | null) => {
+    setEditingTransactionId(transactionId);
+  }, []);
+
   return {
     // State
     sorting,
@@ -256,7 +248,7 @@ export function useTransactionsTable() {
     setTransactionFiltersState,
     globalFilter,
     setGlobalFilter,
-    
+    editingTransactionId, // <-- Return ID for dialog control
     // Derived State
     activeFilterCount,
     pageCount,
@@ -271,6 +263,7 @@ export function useTransactionsTable() {
     handleBulkDelete,
     syncMutation,
     handleSync,
+    handleCategoryIconClick, // <-- Return handler for column
     hasMonobankToken, // Expose token status
   };
 } 

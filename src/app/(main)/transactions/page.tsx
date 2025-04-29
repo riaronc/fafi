@@ -13,6 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { TransactionFilters } from "@/components/features/transactions/transaction-filters";
 import { TransactionTable } from "@/components/features/transactions/transaction-table";
 import { useTransactionsTable } from "@/hooks/use-transactions-table";
+import { CategoryChangeDialog } from "@/components/features/transactions/category-change-dialog";
 
 export default function TransactionsPage() {
   const {
@@ -27,6 +28,7 @@ export default function TransactionsPage() {
     setTransactionFiltersState,
     globalFilter,
     setGlobalFilter,
+    editingTransactionId,
     // Derived State
     activeFilterCount,
     pageCount,
@@ -39,11 +41,20 @@ export default function TransactionsPage() {
     handleBulkDelete,
     syncMutation,
     handleSync,
+    handleCategoryIconClick,
     hasMonobankToken,
   } = useTransactionsTable();
 
   const [isFiltersOpen, setIsFiltersOpen] = useState(false); 
   const selectedRowIds = Object.keys(rowSelection);
+
+  const isCategoryDialogOpen = !!editingTransactionId;
+
+  const handleCloseCategoryDialog = () => {
+      // Logic to set editingTransactionId to null needs to be in the hook's mutation success/error or passed explicitly
+      // For now, this can be empty if hook handles it, or call hook setter if exposed.
+      // Let's ensure the hook handles it.
+  };
 
   return (
       <div className="flex flex-col h-full space-y-4">
@@ -134,8 +145,18 @@ export default function TransactionsPage() {
             pagination={pagination}
             setPagination={setPagination}
             pageCount={pageCount}
-            handleDelete={handleDelete} // Pass the delete handler
+            handleDelete={handleDelete} 
+            handleCategoryClick={handleCategoryIconClick}
          />
+
+         {/* Category Change Dialog - Render conditionally */} 
+         {editingTransactionId && (
+              <CategoryChangeDialog
+                  transactionId={editingTransactionId}
+                  isOpen={isCategoryDialogOpen}
+                  onClose={() => handleCategoryIconClick(null)}
+              />
+         )}
       </div>
   );
 } 

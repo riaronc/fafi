@@ -3,7 +3,7 @@
 import { categories as CategoriesModel } from "@prisma/client";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CategoryIcon } from "./category-icon";
+import { CategoryIcon } from "@/components/shared/category-icon";
 import { MoreVertical, Pencil, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
@@ -28,7 +28,7 @@ export function CategoryCard({ category, onEdit, onDelete }: CategoryCardProps) 
           className="p-1.5 rounded-full flex items-center justify-center text-xs"
           style={{ backgroundColor: category.bgColor, color: category.fgColor }}
         >
-          <CategoryIcon name={category.icon} className="h-4 w-4" />
+          <CategoryIcon iconName={category.icon} className="h-4 w-4" />
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

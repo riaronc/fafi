@@ -45,6 +45,7 @@ interface TransactionTableProps {
     setPagination: React.Dispatch<React.SetStateAction<PaginationState>>;
     pageCount: number;
     handleDelete: (id: string) => void; // Pass delete handler
+    handleCategoryClick: (id: string) => void; // Add prop definition
 }
 
 export function TransactionTable({
@@ -59,10 +60,14 @@ export function TransactionTable({
     setPagination,
     pageCount,
     handleDelete,
+    handleCategoryClick, // Add to props destructuring
 }: TransactionTableProps) {
 
     // Get columns definition
-    const columns = useMemo(() => getTransactionColumns(handleDelete), [handleDelete]);
+    const columns = useMemo(
+        () => getTransactionColumns(handleDelete, handleCategoryClick), // Pass handler
+        [handleDelete, handleCategoryClick]
+    );
 
 
     // Create react-table instance using tableData directly

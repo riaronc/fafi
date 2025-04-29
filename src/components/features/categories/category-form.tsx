@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { CategoryIcon } from "./category-icon";
+import { CategoryIcon } from "@/components/shared/category-icon";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -158,7 +158,7 @@ export function CategoryForm({ onSubmit, initialData, isPending }: CategoryFormP
                 color: watchedFgColor || "#333333"
               }}
             >
-              <CategoryIcon name={watchedIcon || "help-circle"} className="h-5 w-5" />
+              <CategoryIcon iconName={watchedIcon || "help-circle"} className="h-5 w-5" />
             </div>
             <span 
               className="text-sm font-medium truncate"
@@ -192,7 +192,7 @@ export function CategoryForm({ onSubmit, initialData, isPending }: CategoryFormP
                           field.value === icon && "border-2 border-primary ring-2 ring-primary/50"
                         )}
                       >
-                        <CategoryIcon name={icon} className="h-5 w-5" />
+                        <CategoryIcon iconName={icon} className="h-5 w-5" />
                         <span className="sr-only">{icon}</span>
                       </Label>
                     </FormItem>

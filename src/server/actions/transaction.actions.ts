@@ -335,6 +335,62 @@ export async function updateTransaction(transactionId: string, input: unknown): 
    }
 }
 
+// --- UPDATE TRANSACTION CATEGORY ---
+type UpdateCategoryResult =
+  | { success: true }
+  | { success: false; error: string };
+
+const updateCategorySchema = z.object({
+    categoryId: z.string().cuid().nullable(), // Allow null to uncategorize
+});
+
+async function updateTransactionCategory(transactionId: string, input: { categoryId: string | null }): Promise<UpdateCategoryResult> {
+    try {
+        const userId = await getAuthenticatedUserId();
+
+        // Validate input
+        const validationResult = updateCategorySchema.safeParse(input);
+        if (!validationResult.success) {
+            return { success: false, error: "Invalid category ID." };
+        }
+        const { categoryId } = validationResult.data;
+
+        // Ensure category exists and belongs to user (if not null)
+        if (categoryId) {
+            const categoryExists = await prisma.categories.findFirst({
+                where: { id: categoryId, userId }
+            });
+            if (!categoryExists) {
+                return { success: false, error: "Category not found or invalid." };
+            }
+        }
+
+        // Update the transaction
+        await prisma.transactions.update({
+            where: { id: transactionId, userId }, // Ensure user owns transaction
+            data: {
+                categoryId: categoryId,
+            },
+        });
+
+        // No need for complex balance recalc here, just revalidate paths
+        revalidatePath("/transactions");
+        revalidatePath("/dashboard");
+        // Potentially revalidate category pages if they show usage counts
+        revalidatePath("/categories");
+
+        return { success: true };
+
+    } catch (error) {
+        console.error("Error updating transaction category:", error);
+        // Handle potential errors like transaction not found
+        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+             return { success: false, error: "Transaction not found." };
+        }
+        return { success: false, error: error instanceof Error ? error.message : "Failed to update category" };
+    }
+}
+
 // --- DELETE TRANSACTION ---
 // Define the result type for deletion
 type DeleteActionResult = 
@@ -385,4 +441,7 @@ export async function deleteTransaction(transactionId: string): Promise<DeleteAc
     console.error("Error deleting transaction:", error);
     return { success: false, error: error instanceof Error ? error.message : "Failed to delete transaction" };
   }
-} 
+}
+
+// Export the new action
+export { updateTransactionCategory }; 

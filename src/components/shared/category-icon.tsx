@@ -1,27 +1,163 @@
 "use client";
 
-import React, { lazy, Suspense } from 'react';
-import dynamic from 'next/dynamic';
-import { LucideProps, CircleHelp } from 'lucide-react';
+import React from 'react';
+import {
+    ShoppingCart,
+    Store,
+    ShoppingBag,
+    Utensils,
+    Coffee,
+    GlassWater,
+    Pizza,
+    ChefHat,
+    Car,
+    Bus,
+    Train,
+    Plane,
+    Bike,
+    Fuel,
+    Ship,
+    Sailboat,
+    Receipt,
+    FileText,
+    Zap,
+    Home,
+    Phone,
+    Wifi,
+    Tv,
+    Ticket,
+    Clapperboard,
+    Music,
+    Gamepad2,
+    Dice5,
+    PartyPopper,
+    HeartPulse,
+    Stethoscope,
+    Pill,
+    Scissors,
+    Shirt,
+    Sparkles,
+    GraduationCap,
+    BookOpen,
+    Apple,
+    Carrot,
+    Milk,
+    KeyRound,
+    Dog,
+    Cat,
+    Luggage,
+    Map,
+    Landmark,
+    DollarSign,
+    Euro,
+    TrendingUp,
+    CircleHelp,
+    Film,
+    HandCoins,
+    Monitor,
+    HelpCircle,
+    MoreHorizontal,
+    Gift,
+    Heart,
+    LucideProps,
+    
+} from 'lucide-react'; // Import all for the map
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from '@/lib/utils';
-import { LoadingSpinner } from '@/components/ui/loading-spinner'; // Assuming a spinner exists
+
+// Define the type for icon names we expect to handle
+// This helps catch typos and ensures we map valid Lucide icon names.
+// Add ALL icon names used in your categories here!
+export type KnownIconName = 
+    | 'ShoppingCart' | 'Store' | 'ShoppingBag' // Shopping
+    | 'Utensils' | 'Coffee' | 'GlassWater' | 'Pizza' | 'ChefHat' // Food/Drink
+    | 'Car' | 'Bus' | 'Train' | 'Plane' | 'Bike' | 'Fuel' | 'Ship' | 'Sailboat' // Transport
+    | 'Receipt' | 'FileText' | 'Zap' | 'Home' | 'Phone' | 'Wifi' | 'Tv' // Bills/Utilities
+    | 'Ticket' | 'Clapperboard' | 'Music' | 'Gamepad2' | 'Dice5' | 'PartyPopper' | 'Film' | 'Monitor' // Entertainment
+    | 'HeartPulse' | 'Stethoscope' | 'Pill' // Health
+    | 'Scissors' | 'Shirt' | 'Sparkles' // Personal Care
+    | 'Gift' | 'Heart' // Love
+    | 'GraduationCap' | 'BookOpen' | 'Heart' // Education
+    | 'Apple' | 'Carrot' | 'Milk' // Groceries
+    | 'KeyRound' // Rent
+    | 'HandCoins' // Money
+    | 'Dog' | 'Cat' // Pets
+    | 'Luggage' | 'Map' // Travel
+    | 'Landmark' | 'DollarSign' | 'Euro' | 'TrendingUp' // Income/Salary
+    | 'CircleHelp' | 'HelpCircle' | 'MoreHorizontal' // Other/Default
+    // Add any other icons you use in your category definitions!
+    ; // Allow any Lucide icon, but prioritize known ones
+
+// --- Icon Map --- 
+// Map string names (case-sensitive, matching Lucide export) to components
+const iconMap: Record<string, React.ComponentType<LucideProps>> = {
+    ShoppingCart: ShoppingCart,
+    Store: Store,
+    Heart: Heart,
+    ShoppingBag: ShoppingBag,
+    Utensils: Utensils,
+    HandCoins: HandCoins,
+    Coffee: Coffee,
+    GlassWater: GlassWater,
+    Film: Film,
+    Monitor: Monitor,
+    Pizza: Pizza,
+    ChefHat: ChefHat,
+    Car: Car,
+    Bus: Bus,
+    Train: Train,
+    Plane: Plane,
+    Bike: Bike,
+    Fuel: Fuel,
+    Ship: Ship,
+    Sailboat: Sailboat,
+    Receipt: Receipt,
+    FileText: FileText,
+    Zap: Zap,
+    Home: Home,
+    Phone: Phone,
+    Wifi: Wifi,
+    Tv: Tv,
+    Ticket: Ticket,
+    Clapperboard: Clapperboard,
+    Music: Music,
+    Gamepad2: Gamepad2,
+    Dice5: Dice5,
+    PartyPopper: PartyPopper,
+    HeartPulse: HeartPulse,
+    Stethoscope: Stethoscope,
+    Pill: Pill,
+    Scissors: Scissors,
+    Shirt: Shirt,
+    Sparkles: Sparkles,
+    GraduationCap: GraduationCap,
+    BookOpen: BookOpen,
+    Apple: Apple,
+    Carrot: Carrot,
+    Milk: Milk,
+    KeyRound: KeyRound,
+    Dog: Dog,
+    Cat: Cat,
+    Luggage: Luggage,
+    Map: Map,
+    Landmark: Landmark,
+    DollarSign: DollarSign,
+    Euro: Euro,
+    TrendingUp: TrendingUp,
+    CircleHelp: CircleHelp,
+    HelpCircle: HelpCircle,
+    MoreHorizontal: MoreHorizontal,
+    // Add other statically imported icons here
+};
 
 interface CategoryIconProps {
-  iconName: string | null | undefined;
+  // Use the specific KnownIconName type, allowing undefined/null
+  iconName: KnownIconName | string | null | undefined;
   color?: string | null | undefined;
   tooltip?: string;
   size?: number;
   className?: string;
 }
-
-// Helper to format icon name (e.g., 'shopping-cart' -> 'ShoppingCart')
-const formatIconName = (name: string): string => {
-    return name
-        .split('-')
-        .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-        .join('');
-};
 
 export function CategoryIcon({
     iconName = 'CircleHelp',
@@ -30,51 +166,28 @@ export function CategoryIcon({
     size = 16,
     className
 }: CategoryIconProps) {
-    const formattedName = formatIconName(iconName ?? 'CircleHelp');
-
-    // Dynamically import the Lucide icon component
-    const LucideIcon = dynamic<LucideProps>(
-        () => import('lucide-react').then((mod) => {
-            // Check if the formatted name exists in the module
-            const IconComponent = mod[formattedName as keyof typeof mod];
-            if (IconComponent) {
-                // Assert the type here
-                return IconComponent as React.ComponentType<LucideProps>; 
-            }
-            // Fallback if the icon name is invalid or not found
-            console.warn(`Lucide icon "${formattedName}" not found, falling back to CircleHelp.`);
-             // Assert the type here
-            return mod.CircleHelp as React.ComponentType<LucideProps>;
-        }).catch(err => {
-            console.error(`Error loading Lucide icon "${formattedName}":`, err);
-             // Assert the type here
-            return CircleHelp as React.ComponentType<LucideProps>; // Fallback on error
-        }),
-        {
-            // Optional: Add a loading component
-            loading: () => <LoadingSpinner size="sm" />, // Use 'sm' instead of 'xs'
-            ssr: false // Avoid SSR issues with dynamic imports if needed
-        }
-    );
-
+    // Find the component in the map, fallback to CircleHelp
+    const LucideIcon = iconName ? (iconMap[iconName as string] ?? CircleHelp) : CircleHelp;
 
     const iconElement = (
-        <Suspense fallback={<LoadingSpinner size="sm" />}>
-            <LucideIcon
-                size={size}
-                style={color ? { color: color } : {}}
-                className={cn("inline-block", className)}
-            />
-        </Suspense>
+        <LucideIcon
+            size={size}
+            style={color ? { color: color } : {}}
+            // Remove className from direct icon, apply to wrapper
+            // className={cn(\"inline-block\", className)} \
+        />
     );
+
+    const wrapperStyle = { width: size, height: size };
+    // Apply className to the wrapper span
+    const wrapperClassName = cn("flex items-center mx-auto justify-center", className);
 
      if (tooltip) {
         return (
             <TooltipProvider delayDuration={100}>
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        {/* Add fixed width/height to prevent layout shift during load */}
-                        <span className={cn("flex items-center justify-center", className)} style={{ width: size, height: size }}>
+                        <span className={wrapperClassName} style={wrapperStyle}>
                             {iconElement}
                         </span>
                     </TooltipTrigger>
@@ -87,7 +200,7 @@ export function CategoryIcon({
     }
 
     return (
-         <span className={cn("flex items-center justify-center", className)} style={{ width: size, height: size }}>
+         <span className={wrapperClassName} style={wrapperStyle}>
             {iconElement}
         </span>
     );
