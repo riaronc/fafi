@@ -22,13 +22,15 @@ export function CategoryCard({ category, onEdit, onDelete }: CategoryCardProps) 
   return (
     <Card className="flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow duration-200">
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
-        <CardTitle className="text-sm font-medium min-w-[100px]">{category.name}</CardTitle>
-        {/* Icon with background/foreground color */}
-        <div 
+        <div className="flex flex-row items-center justify-center space-x-2">
+      <div 
           className="p-1.5 rounded-full flex items-center justify-center text-xs"
           style={{ backgroundColor: category.bgColor, color: category.fgColor }}
         >
           <CategoryIcon iconName={category.icon} className="h-4 w-4" />
+        </div>
+        <CardTitle className="text-sm font-medium ">{category.name}</CardTitle>
+        {/* Icon with background/foreground color */}
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

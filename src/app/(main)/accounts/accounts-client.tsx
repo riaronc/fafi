@@ -73,10 +73,8 @@ function AccountFormDialog({ isOpen, onOpenChange, account }: AccountDialogProps
     defaultValues: isEditing ? {
       name: account?.name ?? '',
       type: account?.type ?? AccountType.CHECKING,
-      // Cast balance to Number before division
-      balance: account ? (Number(account.balance) / 100) : undefined, 
+      balance: account ? (Number(account.balance) / 100) : undefined,
       currency: account?.currency ?? 'USD',
-      // Ensure bankId access is safe
       bankId: account?.bankId,
     } : {
       name: '',
@@ -86,6 +84,23 @@ function AccountFormDialog({ isOpen, onOpenChange, account }: AccountDialogProps
       bankId: null,
     },
   });
+
+  // Effect to reset form when the account prop changes or dialog opens for editing
+  useEffect(() => {
+    if (isOpen && isEditing && account) {
+      form.reset({
+        name: account.name,
+        type: account.type,
+        balance: Number(account.balance) / 100,
+      //   currency: account.currency,
+        bankId: account.bankId,
+      });
+    } else if (!isOpen) {
+      // Optionally reset when closing to clear previous edit state
+      // form.reset(); // Or reset to specific default create values if needed
+    }
+     // Add account and isOpen as dependencies to re-run when they change
+  }, [account, isOpen, isEditing, form]);
 
   const createMutation = useMutation({
     mutationFn: createAccount,
@@ -323,10 +338,15 @@ function MonobankConnectionDialog({ isOpen, onOpenChange, initialHasToken }: Mon
    });
 
    const syncAccountsMutation = useMutation({
-      mutationFn: syncMonobankAccounts, // Action now fetches accounts itself
+      mutationFn: syncMonobankAccounts, // Action now accepts selectedBankIds
       onSuccess: (result) => {
          if (result.success) {
-            toast({ title: "Accounts Synced", description: "Selected Monobank accounts saved." });
+            // Adjusted success message based on actual counts returned
+            const addedDesc = result.added ? `${result.added} added` : '';
+            const updatedDesc = result.updated ? `${result.updated} updated` : '';
+            const separator = result.added && result.updated ? ', ' : '';
+            const description = addedDesc || updatedDesc ? `Sync complete: ${addedDesc}${separator}${updatedDesc}.` : "Accounts checked, no changes needed.";
+            toast({ title: "Accounts Synced", description });
             queryClient.invalidateQueries({ queryKey: ['accounts'] });
             onOpenChange(false); // Close dialog on success
          } else {
@@ -345,16 +365,27 @@ function MonobankConnectionDialog({ isOpen, onOpenChange, initialHasToken }: Mon
    };
 
    const handleSaveSelected = () => {
-      // The server action `syncMonobankAccounts` now handles fetching and upserting all accounts.
-      // We don't need to send selected accounts from the client anymore.
-      syncAccountsMutation.mutate(); 
+      // Filter the state to get IDs of accounts where the value is true
+      const selectedIds = Object.entries(selectedMonoAccounts)
+          .filter(([_, isSelected]) => isSelected)
+          .map(([id, _]) => id);
+
+      // Only proceed if there are accounts selected
+      if (selectedIds.length === 0) {
+         toast({ variant: "default", title: "No Accounts Selected", description: "Please select at least one account to sync." });
+         return;
+      }
+      
+      console.log("[Dialog] Syncing selected account IDs:", selectedIds); // Log selected IDs
+      // Pass the array of selected IDs to the mutation
+      syncAccountsMutation.mutate(selectedIds); 
    };
 
    const isLoading = storeTokenMutation.isPending || isLoadingClientInfo || syncAccountsMutation.isPending;
 
    // Ensure acc.balance is treated as number for formatBalance
-   const formatMonoBalance = (balance: number, currencyCode: number) => {
-      return formatBalance(balance, currencyMap[currencyCode] || "UAH");
+   const formatMonoValue = (value: number, currencyCode: number) => {
+      return formatBalance(value, currencyMap[currencyCode] || "UAH");
    };
 
    return (
@@ -400,10 +431,21 @@ Enter your Monobank API token to link your accounts.
                                  onCheckedChange={() => toggleAccountSelection(acc.id)}
                                  disabled={existingBankIds.has(acc.id)} // Disable unchecking existing
                               />
-                              <Label htmlFor={`mono-acc-${acc.id}`} className="flex-1 cursor-pointer">
-                                 <span className="font-medium">{`Mono ${acc.maskedPan.slice(-1)[0] ?? acc.type}`}</span>
-                                 {/* Call helper ensuring balance is number */}
-                                 <span className="text-muted-foreground text-xs block">{formatMonoBalance(Number(acc.balance), acc.currencyCode)}</span>
+                              <Label htmlFor={`mono-acc-${acc.id}`} className="flex-1 cursor-pointer space-y-1">
+                                 {/* Card Type & Currency */}
+                                 <div className="flex items-center justify-between">
+                                     <span className="font-medium capitalize">{`${acc.type} (${currencyMap[acc.currencyCode] ?? '?'})`}</span>
+                                     {/* You might want an icon here based on type */}
+                                 </div>
+                                 {/* Balance & Limit */}
+                                 <div className="text-xs text-muted-foreground flex items-center justify-between">
+                                     <span>Balance: {formatMonoValue(acc.balance, acc.currencyCode)}</span>
+                                     {acc.creditLimit > 0 && (
+                                        <span>Limit: {formatMonoValue(acc.creditLimit, acc.currencyCode)}</span>
+                                     )}
+                                 </div>
+                                 {/* Masked Pan (Optional - uncomment if needed) */}
+                                 {/* <span className="text-xs text-muted-foreground block">{acc.maskedPan.join(' ')}</span> */}
                               </Label>
                            </div>
                         ))}

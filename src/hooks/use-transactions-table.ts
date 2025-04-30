@@ -61,7 +61,7 @@ export function useTransactionsTable() {
   // Table State
   const [sorting, setSorting] = useState<SortingState>([]);
   const [transactionFiltersState, setTransactionFiltersState] = useState<TransactionFilterValues>({});
-  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
+  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 30 });
   const pagination = useMemo(() => ({ pageIndex, pageSize }), [pageIndex, pageSize]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [globalFilter, setGlobalFilter] = useState(''); // For description search
@@ -138,8 +138,8 @@ export function useTransactionsTable() {
       let amount = 0;
       let accountName = 'N/A';
       if (tx.type === 'INCOME') {
-        amount = tx.sourceAmount;
-        accountName = tx.sourceAccount?.name ?? 'Unknown';
+        amount = tx.destinationAmount;
+        accountName = tx.destinationAccount?.name ?? 'Unknown';
       } else if (tx.type === 'EXPENSE') {
         amount = -tx.sourceAmount;
         accountName = tx.sourceAccount?.name ?? 'Unknown';

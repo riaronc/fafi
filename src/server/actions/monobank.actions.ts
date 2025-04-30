@@ -298,7 +298,8 @@ export async function getMonobankClientInfo(): Promise<GetClientInfoResult> {
 // --- SYNC MONOBANK ACCOUNTS (to local DB) --- 
 type SyncAccountsResult = { success: boolean; error?: string; added?: number; updated?: number };
 
-export async function syncMonobankAccounts(): Promise<SyncAccountsResult> {
+// Modified to accept selected bank IDs
+export async function syncMonobankAccounts(selectedBankIds: string[]): Promise<SyncAccountsResult> {
   try {
     const { userId } = await getAuthenticatedUserIdAndToken();
     const clientInfoResult = await getMonobankClientInfo();
@@ -307,17 +308,26 @@ export async function syncMonobankAccounts(): Promise<SyncAccountsResult> {
       return { success: false, error: clientInfoResult.error };
     }
 
-    const monobankAccounts = clientInfoResult.data.accounts;
+    // Get all accounts from Monobank API
+    const allMonobankAccounts = clientInfoResult.data.accounts;
     let addedCount = 0;
     let updatedCount = 0;
 
-    for (const monoAccount of monobankAccounts) {
+    // Filter the accounts based on the selected IDs from the client
+    const accountsToProcess = allMonobankAccounts.filter(monoAccount => 
+        selectedBankIds.includes(monoAccount.id)
+    );
+    console.log(`[Sync] Processing ${accountsToProcess.length} selected accounts out of ${allMonobankAccounts.length} total from API.`);
+
+    // Process only the selected accounts
+    for (const monoAccount of accountsToProcess) { 
       const currency = currencyMap[monoAccount.currencyCode];
       if (!currency) {
         console.warn(`Skipping Monobank account ${monoAccount.id}: Unknown currency code ${monoAccount.currencyCode}`);
         continue;
       }
 
+      // Data for creation or checking update needs
       const accountData = {
         name: `Mono ${monoAccount.maskedPan.slice(-1)[0] ?? monoAccount.type}`,
         type: "CHECKING" as const, // Default type, could be refined
@@ -327,19 +337,45 @@ export async function syncMonobankAccounts(): Promise<SyncAccountsResult> {
         userId: userId,
       };
 
-      await prisma.accounts.upsert({
-        where: { userId_bankId: { userId, bankId: monoAccount.id } }, // Need a unique constraint on [userId, bankId]
-        update: { balance: accountData.balance, name: accountData.name }, // Update balance and maybe name
-        create: accountData,
+      // Find existing account first
+      console.log(`[Sync] Checking for account with bankId: ${monoAccount.id}, userId: ${userId}`); // Log bankId being checked
+      const existingAccount = await prisma.accounts.findFirst({
+          where: {
+              userId: userId,
+              bankId: monoAccount.id,
+          }
       });
 
-      // This logic assumes upsert doesn't tell us if it created or updated easily.
-      // A findFirst + create/update would be needed for precise counts.
-      // For now, we just report success without counts.
+      if (existingAccount) {
+          console.log(`[Sync] Found existing account (ID: ${existingAccount.id}) for bankId: ${monoAccount.id}. Checking for updates...`); // Log found
+          // Update existing account if necessary (e.g., balance or name changed)
+          if (existingAccount.balance !== accountData.balance || existingAccount.name !== accountData.name) {
+              console.log(`[Sync] Updating account ID: ${existingAccount.id}`); // Log update
+              await prisma.accounts.update({
+                  where: { id: existingAccount.id },
+                  data: {
+                      balance: accountData.balance,
+                      name: accountData.name,
+                  }
+              });
+              updatedCount++;
+          } else {
+               console.log(`[Sync] No updates needed for account ID: ${existingAccount.id}`); // Log no update needed
+          }
+      } else {
+          console.log(`[Sync] No existing account found for bankId: ${monoAccount.id}. Creating new account...`); // Log creation
+          // Create new account
+          await prisma.accounts.create({
+              data: accountData
+          });
+          addedCount++;
+           console.log(`[Sync] Created new account for bankId: ${monoAccount.id}`); // Log created
+      }
     }
 
     revalidatePath("/accounts");
-    return { success: true }; // Simplified result
+    // Return counts for better feedback
+    return { success: true, added: addedCount, updated: updatedCount };
 
   } catch (error) {
     console.error("Error syncing Monobank accounts:", error);
