@@ -240,6 +240,31 @@ async function getAuthenticatedUserIdAndToken() {
 
 const toCents = (amount: number) => Math.round(amount * 100);
 
+// --- CHECK TOKEN STATUS ---
+type CheckTokenStatusResult = { success: boolean; hasToken: boolean; error?: string };
+
+export async function checkMonobankTokenStatus(): Promise<CheckTokenStatusResult> {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return { success: false, hasToken: false, error: "User not authenticated" };
+  }
+  const userId = session.user.id;
+
+  try {
+    const user = await prisma.users.findUnique({
+      where: { id: userId },
+      select: { monobankToken: true }, // Only select the necessary field
+    });
+
+    const hasToken = !!user?.monobankToken; // Check if token exists (and is not null/empty)
+    return { success: true, hasToken };
+
+  } catch (error) {
+    console.error("[checkMonobankTokenStatus] Error checking token status:", error);
+    return { success: false, hasToken: false, error: "Failed to check token status." };
+  }
+}
+
 // --- STORE TOKEN --- 
 type StoreTokenResult = { success: boolean; error?: string };
 

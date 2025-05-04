@@ -59,6 +59,7 @@ model transactions {
   bankTransactionId  String?       @unique
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @updatedAt
+  deletedAt          DateTime?     
 
   // Relations
   sourceAccount      accounts?     @relation("SourceAccount", fields: [sourceAccountId], references: [id])

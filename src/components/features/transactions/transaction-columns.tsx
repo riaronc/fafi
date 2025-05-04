@@ -53,30 +53,6 @@ export const getTransactionColumns = (
     enableHiding: false,
   },
   {
-    accessorKey: "categoryIcon",
-    header: "", // No header text for icon
-    cell: ({ row }) => (
-        <Button 
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 p-0" // Adjust styling as needed
-            onClick={(e) => {
-                e.stopPropagation(); // Prevent row click events if any
-                handleCategoryClick(row.original.id); // Use the passed handler
-            }}
-            aria-label="Change category"
-        >
-            <CategoryIcon 
-                iconName={row.original.categoryIcon} 
-                color={row.original.categoryColor}
-                tooltip={row.original.category} // Show category name on hover
-                size={18} // Slightly larger maybe
-            />
-        </Button>
-    ),
-    enableSorting: false,
-  },
-  {
     accessorKey: "amount",
     header: ({ column }) => (
       <div className="text-right">
@@ -98,6 +74,32 @@ export const getTransactionColumns = (
     },
     enableSorting: true,
   },
+  {
+    accessorKey: "categoryIcon",
+    header: "", // No header text for icon
+    cell: ({ row }) => (
+        <Button 
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 p-0 "
+            style={{  backgroundColor: row.original.bgColor ?? 'transparent' }} // Adjust styling as needed
+            onClick={(e) => {
+                e.stopPropagation(); // Prevent row click events if any
+                handleCategoryClick(row.original.id); // Use the passed handler
+            }}
+            aria-label="Change category"
+        >
+            <CategoryIcon 
+                iconName={row.original.categoryIcon} 
+                color={row.original.fgColor}
+                tooltip={row.original.category} // Show category name on hover
+                size={18} // Slightly larger maybe
+            />
+        </Button>
+    ),
+    enableSorting: false,
+  },
+  
   {
     accessorKey: "account",
     header: "Account",

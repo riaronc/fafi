@@ -3840,6 +3840,7 @@ export namespace Prisma {
     bankTransactionId: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    deletedAt: Date | null
     sourceAccountId: string | null
     destinationAccountId: string | null
     categoryId: string | null
@@ -3856,6 +3857,7 @@ export namespace Prisma {
     bankTransactionId: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    deletedAt: Date | null
     sourceAccountId: string | null
     destinationAccountId: string | null
     categoryId: string | null
@@ -3872,6 +3874,7 @@ export namespace Prisma {
     bankTransactionId: number
     createdAt: number
     updatedAt: number
+    deletedAt: number
     sourceAccountId: number
     destinationAccountId: number
     categoryId: number
@@ -3900,6 +3903,7 @@ export namespace Prisma {
     bankTransactionId?: true
     createdAt?: true
     updatedAt?: true
+    deletedAt?: true
     sourceAccountId?: true
     destinationAccountId?: true
     categoryId?: true
@@ -3916,6 +3920,7 @@ export namespace Prisma {
     bankTransactionId?: true
     createdAt?: true
     updatedAt?: true
+    deletedAt?: true
     sourceAccountId?: true
     destinationAccountId?: true
     categoryId?: true
@@ -3932,6 +3937,7 @@ export namespace Prisma {
     bankTransactionId?: true
     createdAt?: true
     updatedAt?: true
+    deletedAt?: true
     sourceAccountId?: true
     destinationAccountId?: true
     categoryId?: true
@@ -4035,6 +4041,7 @@ export namespace Prisma {
     bankTransactionId: string | null
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
     sourceAccountId: string | null
     destinationAccountId: string | null
     categoryId: string | null
@@ -4070,6 +4077,7 @@ export namespace Prisma {
     bankTransactionId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    deletedAt?: boolean
     sourceAccountId?: boolean
     destinationAccountId?: boolean
     categoryId?: boolean
@@ -4090,6 +4098,7 @@ export namespace Prisma {
     bankTransactionId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    deletedAt?: boolean
     sourceAccountId?: boolean
     destinationAccountId?: boolean
     categoryId?: boolean
@@ -4110,6 +4119,7 @@ export namespace Prisma {
     bankTransactionId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    deletedAt?: boolean
     sourceAccountId?: boolean
     destinationAccountId?: boolean
     categoryId?: boolean
@@ -4130,13 +4140,14 @@ export namespace Prisma {
     bankTransactionId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    deletedAt?: boolean
     sourceAccountId?: boolean
     destinationAccountId?: boolean
     categoryId?: boolean
     userId?: boolean
   }
 
-  export type transactionsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sourceAmount" | "destinationAmount" | "description" | "date" | "type" | "bankTransactionId" | "createdAt" | "updatedAt" | "sourceAccountId" | "destinationAccountId" | "categoryId" | "userId", ExtArgs["result"]["transactions"]>
+  export type transactionsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sourceAmount" | "destinationAmount" | "description" | "date" | "type" | "bankTransactionId" | "createdAt" | "updatedAt" | "deletedAt" | "sourceAccountId" | "destinationAccountId" | "categoryId" | "userId", ExtArgs["result"]["transactions"]>
   export type transactionsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sourceAccount?: boolean | transactions$sourceAccountArgs<ExtArgs>
     destinationAccount?: boolean | transactions$destinationAccountArgs<ExtArgs>
@@ -4174,6 +4185,7 @@ export namespace Prisma {
       bankTransactionId: string | null
       createdAt: Date
       updatedAt: Date
+      deletedAt: Date | null
       sourceAccountId: string | null
       destinationAccountId: string | null
       categoryId: string | null
@@ -4614,6 +4626,7 @@ export namespace Prisma {
     readonly bankTransactionId: FieldRef<"transactions", 'String'>
     readonly createdAt: FieldRef<"transactions", 'DateTime'>
     readonly updatedAt: FieldRef<"transactions", 'DateTime'>
+    readonly deletedAt: FieldRef<"transactions", 'DateTime'>
     readonly sourceAccountId: FieldRef<"transactions", 'String'>
     readonly destinationAccountId: FieldRef<"transactions", 'String'>
     readonly categoryId: FieldRef<"transactions", 'String'>
@@ -7482,6 +7495,7 @@ export namespace Prisma {
     bankTransactionId: 'bankTransactionId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
+    deletedAt: 'deletedAt',
     sourceAccountId: 'sourceAccountId',
     destinationAccountId: 'destinationAccountId',
     categoryId: 'categoryId',
@@ -7774,6 +7788,7 @@ export namespace Prisma {
     bankTransactionId?: StringNullableFilter<"transactions"> | string | null
     createdAt?: DateTimeFilter<"transactions"> | Date | string
     updatedAt?: DateTimeFilter<"transactions"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"transactions"> | Date | string | null
     sourceAccountId?: StringNullableFilter<"transactions"> | string | null
     destinationAccountId?: StringNullableFilter<"transactions"> | string | null
     categoryId?: StringNullableFilter<"transactions"> | string | null
@@ -7794,6 +7809,7 @@ export namespace Prisma {
     bankTransactionId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     sourceAccountId?: SortOrderInput | SortOrder
     destinationAccountId?: SortOrderInput | SortOrder
     categoryId?: SortOrderInput | SortOrder
@@ -7817,6 +7833,7 @@ export namespace Prisma {
     type?: EnumTransactionTypeFilter<"transactions"> | $Enums.TransactionType
     createdAt?: DateTimeFilter<"transactions"> | Date | string
     updatedAt?: DateTimeFilter<"transactions"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"transactions"> | Date | string | null
     sourceAccountId?: StringNullableFilter<"transactions"> | string | null
     destinationAccountId?: StringNullableFilter<"transactions"> | string | null
     categoryId?: StringNullableFilter<"transactions"> | string | null
@@ -7837,6 +7854,7 @@ export namespace Prisma {
     bankTransactionId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     sourceAccountId?: SortOrderInput | SortOrder
     destinationAccountId?: SortOrderInput | SortOrder
     categoryId?: SortOrderInput | SortOrder
@@ -7861,6 +7879,7 @@ export namespace Prisma {
     bankTransactionId?: StringNullableWithAggregatesFilter<"transactions"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"transactions"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"transactions"> | Date | string
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"transactions"> | Date | string | null
     sourceAccountId?: StringNullableWithAggregatesFilter<"transactions"> | string | null
     destinationAccountId?: StringNullableWithAggregatesFilter<"transactions"> | string | null
     categoryId?: StringNullableWithAggregatesFilter<"transactions"> | string | null
@@ -8225,6 +8244,7 @@ export namespace Prisma {
     bankTransactionId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     sourceAccount?: accountsCreateNestedOneWithoutSourceTransactionsInput
     destinationAccount?: accountsCreateNestedOneWithoutDestinationTransactionsInput
     category?: categoriesCreateNestedOneWithoutTransactionsInput
@@ -8241,6 +8261,7 @@ export namespace Prisma {
     bankTransactionId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     sourceAccountId?: string | null
     destinationAccountId?: string | null
     categoryId?: string | null
@@ -8257,6 +8278,7 @@ export namespace Prisma {
     bankTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sourceAccount?: accountsUpdateOneWithoutSourceTransactionsNestedInput
     destinationAccount?: accountsUpdateOneWithoutDestinationTransactionsNestedInput
     category?: categoriesUpdateOneWithoutTransactionsNestedInput
@@ -8273,6 +8295,7 @@ export namespace Prisma {
     bankTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sourceAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     destinationAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8289,6 +8312,7 @@ export namespace Prisma {
     bankTransactionId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     sourceAccountId?: string | null
     destinationAccountId?: string | null
     categoryId?: string | null
@@ -8305,6 +8329,7 @@ export namespace Prisma {
     bankTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type transactionsUncheckedUpdateManyInput = {
@@ -8317,6 +8342,7 @@ export namespace Prisma {
     bankTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sourceAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     destinationAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8777,6 +8803,17 @@ export namespace Prisma {
     not?: NestedEnumTransactionTypeFilter<$PrismaModel> | $Enums.TransactionType
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type AccountsNullableScalarRelationFilter = {
     is?: accountsWhereInput | null
     isNot?: accountsWhereInput | null
@@ -8797,6 +8834,7 @@ export namespace Prisma {
     bankTransactionId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    deletedAt?: SortOrder
     sourceAccountId?: SortOrder
     destinationAccountId?: SortOrder
     categoryId?: SortOrder
@@ -8818,6 +8856,7 @@ export namespace Prisma {
     bankTransactionId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    deletedAt?: SortOrder
     sourceAccountId?: SortOrder
     destinationAccountId?: SortOrder
     categoryId?: SortOrder
@@ -8834,6 +8873,7 @@ export namespace Prisma {
     bankTransactionId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    deletedAt?: SortOrder
     sourceAccountId?: SortOrder
     destinationAccountId?: SortOrder
     categoryId?: SortOrder
@@ -8853,6 +8893,20 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumTransactionTypeFilter<$PrismaModel>
     _max?: NestedEnumTransactionTypeFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type EnumCategoryTypeFilter<$PrismaModel = never> = {
@@ -9300,6 +9354,10 @@ export namespace Prisma {
     set?: $Enums.TransactionType
   }
 
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
   export type accountsUpdateOneWithoutSourceTransactionsNestedInput = {
     create?: XOR<accountsCreateWithoutSourceTransactionsInput, accountsUncheckedCreateWithoutSourceTransactionsInput>
     connectOrCreate?: accountsCreateOrConnectWithoutSourceTransactionsInput
@@ -9632,6 +9690,17 @@ export namespace Prisma {
     not?: NestedEnumTransactionTypeFilter<$PrismaModel> | $Enums.TransactionType
   }
 
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type NestedEnumTransactionTypeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.TransactionType | EnumTransactionTypeFieldRefInput<$PrismaModel>
     in?: $Enums.TransactionType[]
@@ -9640,6 +9709,20 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumTransactionTypeFilter<$PrismaModel>
     _max?: NestedEnumTransactionTypeFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumCategoryTypeFilter<$PrismaModel = never> = {
@@ -9721,6 +9804,7 @@ export namespace Prisma {
     bankTransactionId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     sourceAccount?: accountsCreateNestedOneWithoutSourceTransactionsInput
     destinationAccount?: accountsCreateNestedOneWithoutDestinationTransactionsInput
     category?: categoriesCreateNestedOneWithoutTransactionsInput
@@ -9736,6 +9820,7 @@ export namespace Prisma {
     bankTransactionId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     sourceAccountId?: string | null
     destinationAccountId?: string | null
     categoryId?: string | null
@@ -9880,6 +9965,7 @@ export namespace Prisma {
     bankTransactionId?: StringNullableFilter<"transactions"> | string | null
     createdAt?: DateTimeFilter<"transactions"> | Date | string
     updatedAt?: DateTimeFilter<"transactions"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"transactions"> | Date | string | null
     sourceAccountId?: StringNullableFilter<"transactions"> | string | null
     destinationAccountId?: StringNullableFilter<"transactions"> | string | null
     categoryId?: StringNullableFilter<"transactions"> | string | null
@@ -9991,6 +10077,7 @@ export namespace Prisma {
     bankTransactionId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     destinationAccount?: accountsCreateNestedOneWithoutDestinationTransactionsInput
     category?: categoriesCreateNestedOneWithoutTransactionsInput
     user: usersCreateNestedOneWithoutTransactionsInput
@@ -10006,6 +10093,7 @@ export namespace Prisma {
     bankTransactionId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     destinationAccountId?: string | null
     categoryId?: string | null
     userId: string
@@ -10030,6 +10118,7 @@ export namespace Prisma {
     bankTransactionId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     sourceAccount?: accountsCreateNestedOneWithoutSourceTransactionsInput
     category?: categoriesCreateNestedOneWithoutTransactionsInput
     user: usersCreateNestedOneWithoutTransactionsInput
@@ -10045,6 +10134,7 @@ export namespace Prisma {
     bankTransactionId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     sourceAccountId?: string | null
     categoryId?: string | null
     userId: string
@@ -10441,6 +10531,7 @@ export namespace Prisma {
     bankTransactionId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     sourceAccount?: accountsCreateNestedOneWithoutSourceTransactionsInput
     destinationAccount?: accountsCreateNestedOneWithoutDestinationTransactionsInput
     user: usersCreateNestedOneWithoutTransactionsInput
@@ -10456,6 +10547,7 @@ export namespace Prisma {
     bankTransactionId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     sourceAccountId?: string | null
     destinationAccountId?: string | null
     userId: string
@@ -10731,6 +10823,7 @@ export namespace Prisma {
     bankTransactionId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     sourceAccountId?: string | null
     destinationAccountId?: string | null
     categoryId?: string | null
@@ -10807,6 +10900,7 @@ export namespace Prisma {
     bankTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sourceAccount?: accountsUpdateOneWithoutSourceTransactionsNestedInput
     destinationAccount?: accountsUpdateOneWithoutDestinationTransactionsNestedInput
     category?: categoriesUpdateOneWithoutTransactionsNestedInput
@@ -10822,6 +10916,7 @@ export namespace Prisma {
     bankTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sourceAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     destinationAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10837,6 +10932,7 @@ export namespace Prisma {
     bankTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sourceAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     destinationAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10928,6 +11024,7 @@ export namespace Prisma {
     bankTransactionId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     destinationAccountId?: string | null
     categoryId?: string | null
     userId: string
@@ -10943,6 +11040,7 @@ export namespace Prisma {
     bankTransactionId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     sourceAccountId?: string | null
     categoryId?: string | null
     userId: string
@@ -10958,6 +11056,7 @@ export namespace Prisma {
     bankTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     destinationAccount?: accountsUpdateOneWithoutDestinationTransactionsNestedInput
     category?: categoriesUpdateOneWithoutTransactionsNestedInput
     user?: usersUpdateOneRequiredWithoutTransactionsNestedInput
@@ -10973,6 +11072,7 @@ export namespace Prisma {
     bankTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     destinationAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
@@ -10988,6 +11088,7 @@ export namespace Prisma {
     bankTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     destinationAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
@@ -11003,6 +11104,7 @@ export namespace Prisma {
     bankTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sourceAccount?: accountsUpdateOneWithoutSourceTransactionsNestedInput
     category?: categoriesUpdateOneWithoutTransactionsNestedInput
     user?: usersUpdateOneRequiredWithoutTransactionsNestedInput
@@ -11018,6 +11120,7 @@ export namespace Prisma {
     bankTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sourceAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
@@ -11033,6 +11136,7 @@ export namespace Prisma {
     bankTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sourceAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
@@ -11048,6 +11152,7 @@ export namespace Prisma {
     bankTransactionId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    deletedAt?: Date | string | null
     sourceAccountId?: string | null
     destinationAccountId?: string | null
     userId: string
@@ -11076,6 +11181,7 @@ export namespace Prisma {
     bankTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sourceAccount?: accountsUpdateOneWithoutSourceTransactionsNestedInput
     destinationAccount?: accountsUpdateOneWithoutDestinationTransactionsNestedInput
     user?: usersUpdateOneRequiredWithoutTransactionsNestedInput
@@ -11091,6 +11197,7 @@ export namespace Prisma {
     bankTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sourceAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     destinationAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
@@ -11106,6 +11213,7 @@ export namespace Prisma {
     bankTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sourceAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     destinationAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string

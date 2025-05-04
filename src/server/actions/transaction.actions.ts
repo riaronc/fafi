@@ -404,43 +404,64 @@ type DeleteActionResult =
   | { success: true }
   | { success: false; error: string };
 
-// Export the type for use in the hook
-export type { DeleteActionResult };
-
-// Action to delete a transaction
+/**
+ * Soft deletes a transaction by setting the deletedAt field.
+ * Also reverts the balance changes on associated accounts.
+ */
 export async function deleteTransaction(transactionId: string): Promise<DeleteActionResult> {
-  try {
+   try {
     const userId = await getAuthenticatedUserId();
 
     // --- Database transaction --- 
-    await prisma.$transaction(async (tx: PrismaTransactionClient) => {
-      // Find the transaction and verify ownership
-      const existingTransaction = await tx.transactions.findUnique({
+    const result = await prisma.$transaction(async (tx: PrismaTransactionClient) => {
+      // Find the transaction to delete and verify ownership
+      const transactionToDelete = await tx.transactions.findUnique({
         where: { id: transactionId, userId },
       });
 
-      if (!existingTransaction) {
-        throw new Error("Transaction not found or access denied");
+      if (!transactionToDelete) {
+        throw new Error("Transaction not found or already deleted.");
       }
 
-      // Delete the transaction
-      await tx.transactions.delete({ where: { id: transactionId, userId } });
+      // Mark the transaction as deleted
+      const deletedTransaction = await tx.transactions.update({
+        where: { id: transactionId },
+        data: { deletedAt: new Date() }, // Set the deletedAt timestamp
+      });
 
-      // Revert balance changes (convert Decimal to number using .toNumber())
-      if (existingTransaction.type === TransactionType.INCOME && existingTransaction.destinationAccountId) {
-        await tx.accounts.update({ where: { id: existingTransaction.destinationAccountId }, data: { balance: { decrement: existingTransaction.destinationAmount } } });
-      } else if (existingTransaction.type === TransactionType.EXPENSE && existingTransaction.sourceAccountId) {
-        await tx.accounts.update({ where: { id: existingTransaction.sourceAccountId }, data: { balance: { increment: existingTransaction.sourceAmount } } });
-      } else if (existingTransaction.type === TransactionType.TRANSFER && existingTransaction.sourceAccountId && existingTransaction.destinationAccountId) {
-         await tx.accounts.update({ where: { id: existingTransaction.sourceAccountId }, data: { balance: { increment: existingTransaction.sourceAmount } } });
-         await tx.accounts.update({ where: { id: existingTransaction.destinationAccountId }, data: { balance: { decrement: existingTransaction.destinationAmount } } });
+      // Revert account balance changes based on transaction type
+      const { type, sourceAccountId, destinationAccountId, sourceAmount, destinationAmount } = transactionToDelete;
+
+      if (type === TransactionType.INCOME && destinationAccountId) {
+        await tx.accounts.update({
+          where: { id: destinationAccountId, userId },
+          data: { balance: { decrement: destinationAmount } },
+        });
+      } else if (type === TransactionType.EXPENSE && sourceAccountId) {
+        await tx.accounts.update({
+          where: { id: sourceAccountId, userId },
+          data: { balance: { increment: sourceAmount } },
+        });
+      } else if (type === TransactionType.TRANSFER && sourceAccountId && destinationAccountId) {
+        // Revert transfer: add back to source, subtract from destination
+        await tx.accounts.update({
+          where: { id: sourceAccountId, userId },
+          data: { balance: { increment: sourceAmount } },
+        });
+        await tx.accounts.update({
+          where: { id: destinationAccountId, userId },
+          data: { balance: { decrement: destinationAmount } }, // Assuming destinationAmount is positive
+        });
       }
+
+      return deletedTransaction;
     });
     // --- End of Database transaction --- 
 
     revalidatePath("/transactions");
-    revalidatePath("/dashboard");
-    // Potentially revalidate involved accounts pages too
+    revalidatePath("/dashboard"); // Revalidate dashboard for summaries
+    if (result.sourceAccountId) revalidatePath(`/accounts/${result.sourceAccountId}`);
+    if (result.destinationAccountId) revalidatePath(`/accounts/${result.destinationAccountId}`);
 
     return { success: true };
 
@@ -451,4 +472,4 @@ export async function deleteTransaction(transactionId: string): Promise<DeleteAc
 }
 
 // Export the new action
-export { updateTransactionCategory }; 
+export { updateTransactionCategory, }; 

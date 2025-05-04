@@ -12,6 +12,7 @@ import { z } from "zod";
 import fs from 'fs/promises';
 import path from 'path';
 import { PrismaClient } from "@/server/db/client"; // Import client type
+import { revalidatePath } from "next/cache";
 
 // Define the transaction client type if needed inside transactions
 type PrismaTransactionClient = Omit<PrismaClient, "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends">;
@@ -129,18 +130,56 @@ export async function createCategory(
 }
 
 // --- UPDATE CATEGORY ---
-// TODO: Implement updateCategory action logic with validation
-export async function updateCategory(data: any): Promise<any> {
-  console.log("TODO: Implement updateCategory", data);
-  // Replace with actual Prisma update logic
-  // const userId = await getAuthenticatedUserId();
-  // const category = await prisma.categories.update({ 
-  //   where: { id: data.id, userId }, // Ensure user owns the category
-  //   data: data 
-  // });
-  // return category;
-  // Simulate success for now
-  return data;
+// Define Update input type based on the action schema
+const UpdateCategoryInputSchema = categoryActionSchema.omit({ id: true }); // ID comes separately
+type UpdateCategoryInput = z.infer<typeof UpdateCategoryInputSchema>;
+
+export async function updateCategory(
+  categoryId: string,
+  inputData: UpdateCategoryInput
+): Promise<CategoryActionResult<CategoriesModel>> { 
+  try {
+    // 1. Get User ID
+    const userId = await getAuthenticatedUserId();
+
+    // 2. Validate input data
+    const validatedData = UpdateCategoryInputSchema.parse(inputData);
+
+    // 3. Update Database (ensure user ownership)
+    const updatedCategory = await prisma.categories.update({
+      where: { 
+        id: categoryId, 
+        userId: userId // IMPORTANT: Ensures user owns the category
+      },
+      data: {
+        ...validatedData, 
+        // userId is not needed here as it's part of the where clause
+      },
+    });
+
+    // 4. Revalidate Path
+    revalidatePath("/categories");
+
+    // 5. Return Result
+    return { success: true, data: updatedCategory };
+
+  } catch (error) {
+    console.error(`Error updating category ${categoryId}:`, error);
+    let errorMessage = "Failed to update category";
+    if (error instanceof z.ZodError) {
+      errorMessage = error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(", ");
+    } else if (error instanceof Prisma.PrismaClientKnownRequestError) {
+       // Handle specific Prisma errors, e.g., P2025 (Record not found)
+       if (error.code === 'P2025') {
+           errorMessage = "Category not found or you do not have permission to update it.";
+       } else {
+           errorMessage = `Database error: ${error.code}`;
+       }
+    } else if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    return { success: false, error: errorMessage };
+  }
 }
 
 // --- DELETE CATEGORY ---
@@ -157,7 +196,7 @@ export async function deleteCategory(id: string): Promise<any> {
 }
 
 // --- Types ---
-export type CategoryBasic = Pick<CategoriesModel, 'id' | 'name' | 'icon' | 'bgColor'>;
+export type CategoryBasic = Pick<CategoriesModel, 'id' | 'name' | 'icon' | 'bgColor' | 'fgColor'>;
 export type CategorySuggestion = CategoryBasic & { source: 'csv' | 'history' | 'current' };
 
 // --- Global Cache for Categories and CSV Data (Similar to monobank actions) ---
@@ -200,7 +239,7 @@ async function loadUserCategories(userId: string): Promise<CategoryBasic[]> {
     console.log(`Loading categories for user ${userId}...`);
     const categories = await prisma.categories.findMany({
         where: { userId }, // Only user's categories for selection
-        select: { id: true, name: true, icon: true, bgColor: true },
+        select: { id: true, name: true, icon: true, bgColor: true, fgColor: true },
         orderBy: { name: 'asc' },
     });
     userCategoriesCache.set(userId, categories);
@@ -240,7 +279,7 @@ export async function getCategorySuggestions(transactionId: string): Promise<Get
                 description: true, 
                 // mcc: true, // Cannot select mcc
                 category: { 
-                    select: { id: true, name: true, icon: true, bgColor: true } 
+                    select: { id: true, name: true, icon: true, bgColor: true, fgColor: true } 
                 } // Select category relation details
             }
         });
@@ -292,7 +331,7 @@ export async function getCategorySuggestions(transactionId: string): Promise<Get
                      categoryId: { not: null } 
                  },
                  orderBy: { date: 'desc' },
-                 include: { category: { select: { id: true, name: true, icon: true, bgColor: true } } } 
+                 include: { category: { select: { id: true, name: true, icon: true, bgColor: true, fgColor: true } } } 
              });
 
              if (lastTransaction?.category && !addedCategoryIds.has(lastTransaction.category.id)) {
@@ -310,4 +349,71 @@ export async function getCategorySuggestions(transactionId: string): Promise<Get
         console.error("Error getting category suggestions:", error);
         return { success: false, error: error instanceof Error ? error.message : "Failed to fetch suggestions" };
     }
+}
+
+// --- CREATE DEFAULT CATEGORIES ---
+type CreateDefaultsResult = 
+  | { success: true; added: number }
+  | { success: false; error: string };
+
+// Define the default set of categories with colors from the form palette
+const defaultCategories = [
+  // Expenses - Assigning colors from the non-inverted palette
+  { name: "Groceries", type: CategoryType.EXPENSE, bgColor: "#FEF2F2", fgColor: "#DC2626", icon: "ShoppingCart" },        // Red
+  { name: "Eating out", type: CategoryType.EXPENSE, bgColor: "#FFF7ED", fgColor: "#EA580C", icon: "UtensilsCrossed" },       // Orange
+  { name: "Transport", type: CategoryType.EXPENSE, bgColor: "#F0F9FF", fgColor: "#0284C7", icon: "Car" },                       // Sky
+  { name: "Shopping", type: CategoryType.EXPENSE, bgColor: "#EEF2FF", fgColor: "#4F46E5", icon: "ShoppingBag" },         // Indigo
+  { name: "Entertainment", type: CategoryType.EXPENSE, bgColor: "#FEFDF2", fgColor: "#CA8A04", icon: "Film" },                // Yellow
+  { name: "Utilities", type: CategoryType.EXPENSE, bgColor: "#FAF5FF", fgColor: "#9333EA", icon: "Wrench" },                  // Purple
+  { name: "Health & Fitness", type: CategoryType.EXPENSE, bgColor: "#F7FEE7", fgColor: "#65A30D", icon: "HeartPulse" },       // Lime
+  { name: "Rent", type: CategoryType.EXPENSE, bgColor: "#F9FAFB", fgColor: "#4B5563", icon: "Home" },                       // Gray
+  { name: "Bills & Charges", type: CategoryType.EXPENSE, bgColor: "#ECFDF5", fgColor: "#059669", icon: "Receipt" },           // Emerald
+  { name: "Education", type: CategoryType.EXPENSE, bgColor: "#FEF2F2", fgColor: "#DC2626", icon: "GraduationCap" },         // Red (Repeat)
+  { name: "Travel", type: CategoryType.EXPENSE, bgColor: "#FFF7ED", fgColor: "#EA580C", icon: "Plane" },                     // Orange (Repeat)
+  { name: "Pets", type: CategoryType.EXPENSE, bgColor: "#F0F9FF", fgColor: "#0284C7", icon: "Dog" },                       // Sky (Repeat)
+  // Income - Assigning colors starting from Emerald
+  { name: "Salary", type: CategoryType.INCOME, bgColor: "#ECFDF5", fgColor: "#059669", icon: "Landmark" },             // Emerald
+  { name: "Freelance", type: CategoryType.INCOME, bgColor: "#EEF2FF", fgColor: "#4F46E5", icon: "Briefcase" },            // Indigo
+  { name: "Investment", type: CategoryType.INCOME, bgColor: "#FEFDF2", fgColor: "#CA8A04", icon: "TrendingUp" },          // Yellow
+  { name: "Gift", type: CategoryType.INCOME, bgColor: "#FAF5FF", fgColor: "#9333EA", icon: "Gift" },                    // Purple
+  // Must Have
+  { name: "Uncategorized", type: CategoryType.EXPENSE, bgColor: "#F9FAFB", fgColor: "#4B5563", icon: "CircleHelp" }, // Gray
+];
+
+export async function createDefaultCategories(): Promise<CreateDefaultsResult> {
+  try {
+    const userId = await getAuthenticatedUserId();
+
+    // Get existing category names for the user (case-insensitive check)
+    const existingCategories = await prisma.categories.findMany({
+      where: { userId },
+      select: { name: true },
+    });
+    const existingNamesLower = new Set(existingCategories.map(c => c.name.toLowerCase()));
+
+    // Filter out defaults that already exist
+    const categoriesToAdd = defaultCategories.filter(defCat => 
+      !existingNamesLower.has(defCat.name.toLowerCase())
+    );
+
+    if (categoriesToAdd.length === 0) {
+      return { success: true, added: 0 }; // Indicate nothing needed to be added
+    }
+
+    // Prepare data for createMany
+    const dataToCreate = categoriesToAdd.map(cat => ({ ...cat, userId }));
+
+    // Create the missing categories
+    await prisma.categories.createMany({
+      data: dataToCreate,
+    });
+
+    revalidatePath("/categories"); // Revalidate the page
+
+    return { success: true, added: categoriesToAdd.length };
+
+  } catch (error) {
+    console.error("Error creating default categories:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Failed to create default categories" };
+  }
 } 

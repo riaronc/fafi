@@ -40,7 +40,7 @@ export default async function AccountsPage() {
       <Suspense fallback={<div className="text-center p-8">Loading accounts...</div>}>
         <AccountsClient 
           initialAccounts={initialAccounts ?? []} 
-          hasMonobankToken={!!user?.monobankToken}
+          initialHasMonobankToken={!!user?.monobankToken}
         />
       </Suspense>
     </div>

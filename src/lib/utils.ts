@@ -19,18 +19,18 @@ export const formatBalance = (balance: number, currency: string): string => {
   return formatter.format(numericBalance / 100);
 };
 
-// Currency code mapping (used by formatMonobankBalance)
-// Consider moving this to lib/constants.ts if used elsewhere
+// Currency code mapping (used by formatMonobankBalance and potentially sync)
+// Should map to ISO 4217 codes (UAH, USD, EUR)
 export const currencyMap: Record<number, string> = {
-  980: "₴",
-  840: "$",
-  978: "€",
+  980: "UAH", // Hryvnia
+  840: "USD", // US Dollar
+  978: "EUR", // Euro
 };
 
 // Format monobank balance
 export const formatMonobankBalance = (balance: number, currencyCode: number): string => {
   const locale = typeof navigator !== 'undefined' ? navigator.language : "en-US";
-  const currency = currencyMap[currencyCode] || "₴"; // Default or lookup
+  const currency = currencyMap[currencyCode] || "UAH"; // Default to UAH code
   const formatter = new Intl.NumberFormat(locale || "en-US", {
     style: "currency",
     currency: currency,

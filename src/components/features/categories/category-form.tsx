@@ -29,12 +29,16 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Circle } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-
+import { KnownIconName } from "@/components/shared/category-icon";
 // Icons array for selection (Consider moving to a constants file)
-const icons = [
-  "home", "shopping-cart", "credit-card", "dollar-sign", "briefcase", 
-  "coffee", "utensils", "car", "plane", "film", "book", "gift", "heart", 
-  "phone", "music", "monitor", "zap", "droplet", "thermometer", "shopping-bag"
+// Use PascalCase matching Lucide component names and KnownIconName type
+const icons: KnownIconName[] = [
+  "Home", "ShoppingCart", "CreditCard", "DollarSign", "Briefcase", 
+  "Coffee", "Utensils", "Car", "Plane", "Film", "BookOpen", "Gift", "Heart", 
+  "Phone", "Music", "Monitor", "Zap", "GlassWater", // Changed droplet to GlassWater
+  "Thermometer", // Kept Thermometer (if needed, ensure it's in KnownIconName)
+  "ShoppingBag", 
+  // Add more from KnownIconName as needed
 ];
 
 // Tailwind color palette guide with hex values

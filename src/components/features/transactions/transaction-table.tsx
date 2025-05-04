@@ -177,7 +177,7 @@ export function TransactionTable({
                 </div>
 
                 {/* Pagination Controls */}
-                <div className="p-4 border-t">
+                <div className="p-4 pb-0 border-t">
                     <div className="flex items-center justify-between">
                         <div className="text-sm text-muted-foreground">
                              {selectedRowCount} selected

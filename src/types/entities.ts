@@ -18,7 +18,8 @@ export type TableTransaction = {
   date: Date;
   description: string;
   category: string; // Display name or placeholder
-  categoryColor?: string | null; // Optional color for display
+  bgColor?: string | null; // Optional color for display
+  fgColor?: string | null; // Optional color for display
   categoryIcon?: string | null; // Optional icon
   account: string; // Display name or placeholder (source/destination depending on context)
   type: TransactionType; // Keep the type for potential styling/logic

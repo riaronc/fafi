@@ -59,7 +59,12 @@ export function CategorySheet({ isOpen, onClose, category }: CategorySheetProps)
     Error,           
     UpdateCategoryInput 
   >({
-    mutationFn: updateCategory, // Assuming updateCategory will also return CategoryActionResult
+    mutationFn: async (data: UpdateCategoryInput) => { 
+      // Destructure the id and the rest of the values from the input
+      const { id, ...values } = data; 
+      // Call the server action with the correct signature
+      return updateCategory(id, values); 
+    }, 
     onSuccess: async (result) => { 
       if (result.success) {
         toast({ title: "Success", description: "Category updated successfully." });

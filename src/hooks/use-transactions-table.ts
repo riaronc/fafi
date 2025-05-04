@@ -14,7 +14,6 @@ import { TransactionFilterValues } from "@/components/features/transactions/tran
 import { 
   getTransactions, 
   deleteTransaction,
-  DeleteActionResult, // Import result type
   updateTransactionCategory // Import the specific update action
 } from "@/server/actions/transaction.actions";
 import { syncMonobankTransactions } from "@/server/actions/monobank.actions";
@@ -153,7 +152,8 @@ export function useTransactionsTable() {
         date: new Date(tx.date),
         description: tx.description ?? '',
         category: tx.category?.name ?? 'Uncategorized',
-        categoryColor: tx.category?.bgColor,
+        bgColor: tx.category?.bgColor,
+        fgColor: tx.category?.fgColor,
         categoryIcon: tx.category?.icon ?? 'CircleHelp',
         account: accountName,
         type: tx.type,

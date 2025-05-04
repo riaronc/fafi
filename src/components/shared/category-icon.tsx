@@ -60,7 +60,9 @@ import {
     Gift,
     Heart,
     LucideProps,
-    
+    CreditCard,
+    Briefcase,
+    Thermometer,
 } from 'lucide-react'; // Import all for the map
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from '@/lib/utils';
@@ -77,14 +79,16 @@ export type KnownIconName =
     | 'HeartPulse' | 'Stethoscope' | 'Pill' // Health
     | 'Scissors' | 'Shirt' | 'Sparkles' // Personal Care
     | 'Gift' | 'Heart' // Love
-    | 'GraduationCap' | 'BookOpen' | 'Heart' // Education
+    | 'GraduationCap' | 'BookOpen' // Education - Fixed 'Heart' duplication
     | 'Apple' | 'Carrot' | 'Milk' // Groceries
     | 'KeyRound' // Rent
     | 'HandCoins' // Money
     | 'Dog' | 'Cat' // Pets
     | 'Luggage' | 'Map' // Travel
-    | 'Landmark' | 'DollarSign' | 'Euro' | 'TrendingUp' // Income/Salary
+    | 'Landmark' | 'DollarSign' | 'Euro' | 'TrendingUp' | 'Briefcase' // Income/Salary - Added Briefcase
     | 'CircleHelp' | 'HelpCircle' | 'MoreHorizontal' // Other/Default
+    | 'CreditCard' // Added CreditCard
+    | 'Thermometer' // Added Thermometer
     // Add any other icons you use in your category definitions!
     ; // Allow any Lucide icon, but prioritize known ones
 
@@ -147,6 +151,9 @@ const iconMap: Record<string, React.ComponentType<LucideProps>> = {
     CircleHelp: CircleHelp,
     HelpCircle: HelpCircle,
     MoreHorizontal: MoreHorizontal,
+    CreditCard: CreditCard,
+    Briefcase: Briefcase,
+    Thermometer: Thermometer,
     // Add other statically imported icons here
 };
 
@@ -180,7 +187,7 @@ export function CategoryIcon({
 
     const wrapperStyle = { width: size, height: size };
     // Apply className to the wrapper span
-    const wrapperClassName = cn("flex items-center mx-auto justify-center", className);
+    const wrapperClassName = cn("flex h-8 w-8 items-center mx-auto justify-center", className);
 
      if (tooltip) {
         return (

@@ -3,10 +3,11 @@
 import React, { useState, useMemo } from "react";
 import {
   useQuery,
+  useMutation,
   useQueryClient
 } from "@tanstack/react-query";
 import { CategoryType, categories as CategoriesModel } from "@prisma/client";
-import { getCategories } from "@/server/actions/category.actions"; 
+import { getCategories, createDefaultCategories } from "@/server/actions/category.actions"; 
 import { useToast } from "@/components/ui/use-toast";
 import { CategorySheet } from "./category-sheet";
 import { DeleteCategoryDialog } from "./delete-category-dialog";
@@ -14,7 +15,7 @@ import { CategoryCard } from "./category-card"; // Import the new card component
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Plus } from "lucide-react";
+import { Search, Plus, Sparkles } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 export function CategoriesDataTable() { // Renaming might be appropriate later (e.g., CategoriesGrid)
@@ -58,6 +59,26 @@ export function CategoriesDataTable() { // Renaming might be appropriate later (
       expenseCategories: filteredCategories.filter(cat => cat.type === CategoryType.EXPENSE || cat.type === CategoryType.BOTH), 
     };
   }, [filteredCategories]);
+
+  // --- Mutation for Adding Defaults ---
+  const createDefaultsMutation = useMutation({
+     mutationFn: createDefaultCategories,
+     onSuccess: (result) => {
+       if (result.success) {
+         if (result.added > 0) {
+           toast({ title: "Defaults Added", description: `${result.added} default categories added successfully.` });
+           queryClient.invalidateQueries({ queryKey: ["categories"] }); // Refetch categories
+         } else {
+           toast({ title: "No Action Needed", description: "You already have all the default categories." });
+         }
+       } else {
+         toast({ variant: "destructive", title: "Failed to Add Defaults", description: result.error });
+       }
+     },
+     onError: (error) => {
+        toast({ variant: "destructive", title: "Error", description: error.message });
+     }
+  });
 
   // --- Handlers ---
   const handleOpenEditSheet = (category: CategoriesModel) => {
@@ -104,6 +125,7 @@ export function CategoriesDataTable() { // Renaming might be appropriate later (
          </div>
        )
       }
+
     </div>
   );
 
@@ -121,10 +143,26 @@ export function CategoriesDataTable() { // Renaming might be appropriate later (
              className="pl-8"
            />
         </div>
+        <div className="flex items-center gap-2">
+              {/* Add Default Categories Button */} 
+      <Button 
+        variant="outline" 
+        size="sm" 
+        onClick={() => createDefaultsMutation.mutate()}
+        disabled={createDefaultsMutation.isPending}
+      >
+        {createDefaultsMutation.isPending ? (
+           <LoadingSpinner size="sm" className="mr-2"/>
+         ) : (
+           <Sparkles className="mr-2 h-4 w-4" />
+         )}
+        Add Defaults
+      </Button>
         {/* Add Category Button */} 
         <Button onClick={handleOpenAddSheet} size="sm">
           <Plus className="mr-2 h-4 w-4" /> Add Category
         </Button>
+        </div>
       </div>
 
       {/* Loading State */} 

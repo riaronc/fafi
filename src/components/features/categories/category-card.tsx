@@ -20,14 +20,14 @@ interface CategoryCardProps {
 
 export function CategoryCard({ category, onEdit, onDelete }: CategoryCardProps) {
   return (
-    <Card className="flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow duration-200">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0">
+    <div className="flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow duration-200 rounded-md p-3 py-5">
+      <div className="flex flex-row items-center justify-between space-y-0">
         <div className="flex flex-row items-center justify-center space-x-2">
       <div 
           className="p-1.5 rounded-full flex items-center justify-center text-xs"
           style={{ backgroundColor: category.bgColor, color: category.fgColor }}
         >
-          <CategoryIcon iconName={category.icon} className="h-4 w-4" />
+          <CategoryIcon iconName={category.icon} className="h-4 w-4" size={20}/>
         </div>
         <CardTitle className="text-sm font-medium ">{category.name}</CardTitle>
         {/* Icon with background/foreground color */}
@@ -51,8 +51,8 @@ export function CategoryCard({ category, onEdit, onDelete }: CategoryCardProps) 
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </CardHeader>
+      </div>
      
-    </Card>
+    </div>
   );
 } 

@@ -28,8 +28,8 @@ interface CategoryChangeDialogProps {
 
 // Helper to render a category item in lists
 const CategoryItem = ({ category }: { category: CategoryBasic }) => (
-    <div className="flex flex-1 flex-col items-center justify-center space-y-2 ">
-        <CategoryIcon iconName={category.icon} color={category.bgColor}  />
+    <div className="flex flex-1 flex-col items-center justify-center space-y-2 p-1">
+        <CategoryIcon iconName={category.icon} size={24} />
         <span className="text-[10px] truncate">{category.name}</span>
     </div>
 );
@@ -126,7 +126,7 @@ export function CategoryChangeDialog({
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}> 
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="sm:max-w-md min-h-[560px]">
                 <DialogHeader>
                     <DialogTitle>Change Category</DialogTitle>
                     {hasError && <DialogDescription className="text-destructive">Error loading category data.</DialogDescription>}
@@ -139,7 +139,7 @@ export function CategoryChangeDialog({
                     <RadioGroup
                         value={selectedCategoryId ?? "__NULL__"}
                         onValueChange={(value) => setSelectedCategoryId(value === "__NULL__" ? null : value)}
-                        className="grid gap-4 py-1"
+                        className="grid gap-4 h-full py-1"
                     >
                         {/* Current Category Section (if exists) */} 
                         {currentCategory && (
@@ -183,8 +183,8 @@ export function CategoryChangeDialog({
                         {/* All Categories Section */} 
                          <div className="space-y-1">
                              <Label className="text-xs text-muted-foreground pl-1 pb-2">All Categories</Label>
-                             <ScrollArea className="h-56 w-full">
-                                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 ">
+                             <ScrollArea className="h-70 w-full">
+                                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 p-1">
                                     {/* Option to Uncategorize */} 
                                     <Label 
                                         key="uncategorize" 
@@ -192,18 +192,21 @@ export function CategoryChangeDialog({
                                         className="flex flex-col items-center justify-center p-2 rounded-md border border-transparent hover:border-border cursor-pointer has-[input:checked]:ring-2 has-[input:checked]:ring-primary text-center"
                                     >
                                         <RadioGroupItem value={"__NULL__"} id={`cat-null`} className="sr-only"/>
-                                        <CircleHelp className="w-4 h-4 text-muted-foreground" />
+                                        <CircleHelp className="w-6 h-6 text-muted-foreground" />
                                          <span className="text-[10px] flex-1 text-muted-foreground italic leading-tight">
                                              Uncategorized
                                          </span>
                                      </Label>
 
                                     {/* Rest of categories (use filtered list) */} 
-                                    {filteredAllCategories.map((category) => (
+                                    {filteredAllCategories.map((category: CategoryBasic) => (
                                         <Label 
                                             key={category.id} 
                                             htmlFor={`cat-${category.id}`} 
-                                            className={`flex flex-col justify-between items-center space-x-2 py-2 px-2 rounded-md border border-transparent hover:border-border min-h-[50px] cursor-pointer has-[input:checked]:ring-2 has-[input:checked]:ring-primary bg-[${category.bgColor}]`}
+                                            className={cn('flex flex-col justify-between items-center space-x-2 py-2 px-2 rounded-md border border-transparent hover:border-border min-h-[50px] cursor-pointer has-[input:checked]:ring-2 has-[input:checked]:ring-primary',
+                                                selectedCategoryId === category.id && 'ring-2 ring-primary'
+                                            )}
+                                            style={{ color: category.fgColor, backgroundColor: category.bgColor}}
                                         >
                                             <RadioGroupItem value={category.id} id={`cat-${category.id}`} className="sr-only"/>
                                             <CategoryItem category={category} />
