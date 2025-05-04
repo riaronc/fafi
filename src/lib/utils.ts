@@ -7,16 +7,9 @@ export function cn(...inputs: ClassValue[]) {
 
 // Format balance (convert from minor units/cents to major)
 export const formatBalance = (balance: number, currency: string): string => {
-  // Use a default locale if navigator is not available (e.g., during SSR)
-  const locale = typeof navigator !== 'undefined' ? navigator.language : "uk-UA"; 
-  const formatter = new Intl.NumberFormat(locale || "en-US", {
-    minimumFractionDigits: 2,
-  });
-  
-  // Ensure balance is a number
-  const numericBalance = typeof balance === 'number' ? balance : 0;
-  
-  return formatter.format(numericBalance / 100);
+  const symbol = currency === 'UAH' ? '₴' : currency === 'USD' ? '$' : currency === 'EUR' ? '€' : currency;
+  const amount = (balance / 100).toFixed(2);
+  return symbol === '₴' ? `${amount} ${symbol}` : `${symbol}${amount}`;
 };
 
 // Currency code mapping (used by formatMonobankBalance and potentially sync)
@@ -33,7 +26,7 @@ export const formatMonobankBalance = (balance: number, currencyCode: number): st
   const currency = currencyMap[currencyCode] || "UAH"; // Default to UAH code
   const formatter = new Intl.NumberFormat(locale || "en-US", {
     style: "currency",
-    currency: currency,
+    currency: currency.toLowerCase(),
     minimumFractionDigits: 2,
   });
   

@@ -6,7 +6,7 @@ const accountBaseSchema = z.object({
   name: z.string().min(1, 'Account name is required').max(100),
   // Ensure the value corresponds to the Prisma Enum
   type: z.nativeEnum(AccountType),
-  currency: z.string().length(3, 'Currency code must be 3 letters (e.g., USD)'),
+  currency: z.string().length(1, 'Currency code must be 1 letter (e.g., ₴)'),
   bankId: z.string().max(100).optional().nullable(),
 });
 
