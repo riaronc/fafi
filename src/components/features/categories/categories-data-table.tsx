@@ -6,7 +6,7 @@ import {
   useMutation,
   useQueryClient
 } from "@tanstack/react-query";
-import { CategoryType, categories as CategoriesModel } from "@prisma/client";
+import { CategoryType, categories as CategoriesModel } from "@/server/db/client";
 import { getCategories, createDefaultCategories } from "@/server/actions/category.actions"; 
 import { useToast } from "@/components/ui/use-toast";
 import { CategorySheet } from "./category-sheet";

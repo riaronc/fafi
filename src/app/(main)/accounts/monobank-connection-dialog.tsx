@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { accounts as Account } from "@prisma/client"; // Use Prisma types directly
+import { accounts as Account } from "@/server/db/client"; // Use Prisma types directly
 
 // Import Server Actions
 import {

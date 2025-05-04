@@ -3,8 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  // Updated output path to be relative to this schema location
-  output   = "./client" 
+  output   = "./client"
 }
 
 datasource db {

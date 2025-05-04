@@ -102,7 +102,7 @@ export async function getTransactions(options: GetTransactionsOptions = {}) {
 
 // --- CREATE TRANSACTION ---
 type CreateTransactionResult = 
-  | { success: true; data: import("@prisma/client").transactions }
+  | { success: true; data: import("@/server/db/client").transactions }
   | { success: false; error: string; issues?: z.ZodIssue[] };
 
 export async function createTransaction(input: unknown): Promise<CreateTransactionResult> {
@@ -121,7 +121,7 @@ export async function createTransaction(input: unknown): Promise<CreateTransacti
 
     // --- Database transaction --- 
     const result = await prisma.$transaction(async (tx: PrismaTransactionClient) => {
-      let newTransaction: import("@prisma/client").transactions;
+      let newTransaction: import("@/server/db/client").transactions;
 
       // Common data for all transaction types
       const commonData = {
@@ -229,7 +229,7 @@ export async function createTransaction(input: unknown): Promise<CreateTransacti
 // For simplicity, this version assumes the transaction type and accounts DO NOT change.
 
 type UpdateTransactionResult = 
-  | { success: true; data: import("@prisma/client").transactions }
+  | { success: true; data: import("@/server/db/client").transactions }
   | { success: false; error: string; issues?: z.ZodIssue[] };
 
 export async function updateTransaction(transactionId: string, input: unknown): Promise<UpdateTransactionResult> {

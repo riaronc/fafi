@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/form";
 import { useToast } from "@/components/ui/use-toast";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { accounts as Account, AccountType } from "@prisma/client";
+import { accounts as Account, AccountType } from "@/server/db/client";
 
 // Import Server Actions
 import { createAccount, updateAccount } from "@/server/actions/account.actions";

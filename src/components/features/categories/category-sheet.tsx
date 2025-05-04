@@ -12,7 +12,7 @@ import {
 import { CategoryForm, CategoryFormValues } from "./category-form";
 import { createCategory, updateCategory, CategoryActionResult } from "@/server/actions/category.actions"; // Import result type
 import { useToast } from "@/components/ui/use-toast";
-import { categories as CategoriesModel } from "@prisma/client"; // Import the category type
+import { categories as CategoriesModel } from "@/server/db/client"; // Import the category type
 import { ScrollArea } from "@/components/ui/scroll-area"; // Import ScrollArea
 
 interface CategorySheetProps {

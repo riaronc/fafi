@@ -1,17 +1,13 @@
 'use server';
 
 import { getServerSession } from "next-auth";
-// Import prisma instance from local db setup
-import { prisma } from "@/server/db"; 
-// Import ALL Prisma namespace, types, and enums directly from '@prisma/client'
-import { Prisma, CategoryType, categories as CategoriesModel, TransactionType } from '@prisma/client';
+import { prisma } from "@/server/db";
+import { PrismaClient, Prisma, CategoryType, TransactionType } from "@/server/db/client";
+import type { categories as CategoriesModel } from "@/server/db/client";
 import { authOptions } from "@/server/auth/options";
-// Remove import from client component
-// import { categorySchema } from "@/components/features/categories/category-form"; 
 import { z } from "zod";
 import fs from 'fs/promises';
 import path from 'path';
-import { PrismaClient } from "@/server/db/client"; // Import client type
 import { revalidatePath } from "next/cache";
 
 // Define the transaction client type if needed inside transactions

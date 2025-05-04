@@ -34,7 +34,7 @@ export async function getAccounts() {
 
 // --- CREATE ACCOUNT ---
 type CreateAccountResult = 
-  | { success: true; data: import("@prisma/client").accounts }
+  | { success: true; data: import("@/server/db/client").accounts }
   | { success: false; error: string; issues?: z.ZodIssue[] };
 
 export async function createAccount(input: unknown): Promise<CreateAccountResult> {
@@ -74,7 +74,7 @@ export async function createAccount(input: unknown): Promise<CreateAccountResult
 
 // --- UPDATE ACCOUNT ---
 type UpdateAccountResult = 
-  | { success: true; data: import("@prisma/client").accounts }
+  | { success: true; data: import("@/server/db/client").accounts }
   | { success: false; error: string; issues?: z.ZodIssue[] };
 
 export async function updateAccount(accountId: string, input: unknown): Promise<UpdateAccountResult> {

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { TransactionType, accounts as Account, categories as Category } from '@prisma/client';
+import { TransactionType, accounts as Account, categories as Category } from '@/server/db/client';
 import { CalendarIcon, X } from 'lucide-react';
 import { DateRange } from 'react-day-picker';
 import { format } from 'date-fns';

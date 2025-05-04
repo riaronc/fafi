@@ -7,7 +7,7 @@ import {
   PaginationState, 
   RowSelectionState 
 } from "@tanstack/react-table";
-import { Prisma, TransactionType } from "@prisma/client"; // Import Prisma namespace + Type
+import { Prisma, TransactionType } from "@/server/db/client"; // Import Prisma namespace + Type
 
 import { useToast } from "@/components/ui/use-toast";
 import { TransactionFilterValues } from "@/components/features/transactions/transaction-filters";

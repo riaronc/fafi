@@ -1,6 +1,6 @@
 "use client";
 
-import { categories as CategoriesModel } from "@prisma/client";
+import { categories as CategoriesModel } from "@/server/db/client";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CategoryIcon } from "@/components/shared/category-icon";

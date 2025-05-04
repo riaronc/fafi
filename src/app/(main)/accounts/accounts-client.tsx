@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { accounts as Account } from "@prisma/client"; // Keep Account type for props
+import { accounts as Account } from "@/server/db/client"; // Keep Account type for props
 import { Trash2, Edit2, CreditCard, LinkIcon, RefreshCw, ChevronDown } from "lucide-react";
 import {
    DropdownMenu,

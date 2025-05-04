@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
-import { accounts as Account } from "@prisma/client"; // Use Prisma types directly
+import { accounts as Account } from "@/server/db/client"; // Use Prisma types directly
 
 // Import Server Actions
 import { getAccounts } from "@/server/actions/account.actions";
