@@ -32,7 +32,7 @@ export default async function AccountsPage() {
     <div className="space-y-6">
       {/* Page Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight md:text-3xl">Accounts</h1>
+        <h1 className="text-2xl font-bold tracking-tight md:text-3xl pl-11 lg:pl-0">Accounts</h1>
          {/* Add button logic will be in AccountsClient */}
       </div>
       

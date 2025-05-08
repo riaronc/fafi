@@ -59,7 +59,7 @@ export default function TransactionsPage() {
   return (
       <div className="flex flex-col h-full space-y-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Transactions</h1>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight pl-11 lg:pl-0">Transactions</h1>
           <p className="text-muted-foreground">View and manage your transaction history</p>
         </div>
         

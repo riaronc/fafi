@@ -110,8 +110,8 @@ export function CategorySheet({ isOpen, onClose, category }: CategorySheetProps)
               : "Create a new category to organize your transactions."}
           </SheetDescription>
         </SheetHeader>
-        <ScrollArea className="flex-1 pr-6 px-4">
-          <div className="mt-4">
+        <ScrollArea className="flex-1 min-h-0">
+          <div className="mt-4 px-4">
             <CategoryForm 
               onSubmit={handleSubmit} 
               initialData={initialData}

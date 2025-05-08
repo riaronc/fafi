@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { LucideIcon, Home, CreditCard, PieChart, BarChart3, Settings, User, DollarSign, Folder, Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -33,10 +34,10 @@ export function Sidebar({ className }: SidebarProps) {
       <Button
         variant="outline"
         size="icon"
-        className="fixed top-4 left-4 z-50 lg:hidden"
+        className="fixed top-5  left-5 z-50 lg:hidden"
         onClick={() => setIsOpen(!isOpen)}
       >
-        {isOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+        {isOpen ? <X className="h-3 w-3" /> : <Menu className="h-3 w-3" />}
       </Button>
       
       {/* Overlay for mobile */}
@@ -58,7 +59,7 @@ export function Sidebar({ className }: SidebarProps) {
       >
         <div className="space-y-4 py-4 flex-1">
           <div className="px-4 py-2">
-            <h2 className="mb-2 px-2 text-xl font-semibold tracking-tight">
+            <h2 className="mb-2 px-2 text-xl font-semibold tracking-tight pl-13 lg:pl-2">
               <Link href="/dashboard">FAFI</Link>
             </h2>
             <p className="text-xs text-muted-foreground px-2">
@@ -93,8 +94,11 @@ interface SidebarItemProps {
 }
 
 function SidebarItem({ icon: Icon, title, href, onClick }: SidebarItemProps) {
+  const pathname = usePathname();
+  const isActive = pathname === href;
+
   return (
-    <Button variant="ghost" className="w-full justify-start" asChild onClick={onClick}>
+    <Button variant={isActive ? "secondary" : "ghost"} className="w-full justify-start" asChild onClick={onClick}>
       <Link href={href}>
         <Icon className="mr-2 h-4 w-4" />
         {title}
