@@ -173,7 +173,6 @@ export function AccountFormDialog({ isOpen, onOpenChange, account }: AccountDial
                   <FormLabel>{isEditing ? "Balance" : "Initial Balance"}</FormLabel>
                   <FormControl>
                      <Input
-                     
                         type="number"
                         step="0.01"
                         placeholder="0.00"
@@ -200,9 +199,9 @@ export function AccountFormDialog({ isOpen, onOpenChange, account }: AccountDial
                      <Select onValueChange={field.onChange} defaultValue={field.value}>
                        <FormControl><SelectTrigger><SelectValue placeholder="Select currency" /></SelectTrigger></FormControl>
                        <SelectContent>
-                         <SelectItem value="USD">USD</SelectItem>
-                         <SelectItem value="EUR">EUR</SelectItem>
-                         <SelectItem value="UAH">UAH</SelectItem>
+                         <SelectItem value="$">$</SelectItem>
+                         <SelectItem value="€">€</SelectItem>
+                         <SelectItem value="₴">₴</SelectItem>
                        </SelectContent>
                      </Select>
                    )}

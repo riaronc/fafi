@@ -50,6 +50,7 @@ export async function getTransactions(options: GetTransactionsOptions = {}) {
 
     const where: Prisma.transactionsWhereInput = {
       userId,
+      deletedAt: null, // Only fetch non-deleted transactions
     };
 
     // Apply filters carefully
@@ -400,7 +401,7 @@ async function updateTransactionCategory(transactionId: string, input: { categor
 
 // --- DELETE TRANSACTION ---
 // Define the result type for deletion
-type DeleteActionResult = 
+export type DeleteActionResult = 
   | { success: true }
   | { success: false; error: string };
 
@@ -415,22 +416,34 @@ export async function deleteTransaction(transactionId: string): Promise<DeleteAc
     // --- Database transaction --- 
     const result = await prisma.$transaction(async (tx: PrismaTransactionClient) => {
       // Find the transaction to delete and verify ownership
-      const transactionToDelete = await tx.transactions.findUnique({
+      console.log("Deleting transaction:", transactionId);
+      
+      const transactionToAssess = await tx.transactions.findUnique({
         where: { id: transactionId, userId },
       });
 
-      if (!transactionToDelete) {
-        throw new Error("Transaction not found or already deleted.");
+      if (!transactionToAssess) {
+        // Truly not found for this user or wrong ID
+        throw new Error("Transaction not found or access denied.");
       }
 
-      // Mark the transaction as deleted
+      if (transactionToAssess.deletedAt) {
+        // Already soft-deleted. 
+        // Throw a specific error to inform the client clearly.
+        console.warn(`Attempted to delete an already soft-deleted transaction: ${transactionId}`);
+        throw new Error("Transaction has already been deleted.");
+      }
+
+      // If we reach here, transactionToAssess exists and transactionToAssess.deletedAt is null.
+      // Proceed with the update and balance changes.
       const deletedTransaction = await tx.transactions.update({
-        where: { id: transactionId },
+        where: { id: transactionId }, // userId is implicitly checked by finding transactionToAssess
         data: { deletedAt: new Date() }, // Set the deletedAt timestamp
       });
 
       // Revert account balance changes based on transaction type
-      const { type, sourceAccountId, destinationAccountId, sourceAmount, destinationAmount } = transactionToDelete;
+      // Use transactionToAssess for original amounts and accounts before deletion
+      const { type, sourceAccountId, destinationAccountId, sourceAmount, destinationAmount } = transactionToAssess;
 
       if (type === TransactionType.INCOME && destinationAccountId) {
         await tx.accounts.update({

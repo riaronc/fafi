@@ -14,7 +14,8 @@ import { TransactionFilterValues } from "@/components/features/transactions/tran
 import { 
   getTransactions, 
   deleteTransaction,
-  updateTransactionCategory // Import the specific update action
+  updateTransactionCategory, // Import the specific update action
+  type DeleteActionResult // Added import
 } from "@/server/actions/transaction.actions";
 import { syncMonobankTransactions } from "@/server/actions/monobank.actions";
 import { TableTransaction, TableTransactionWithDateSeparator } from "@/types/entities";
@@ -214,18 +215,51 @@ export function useTransactionsTable() {
   });
 
   // Handlers
-  const handleDelete = useCallback((id: string) => {
-    // TODO: Add confirmation dialog?
-    deleteMutation.mutate(id);
-  }, [deleteMutation]);
+  const handleDelete = useCallback((rowIndexString: string) => {
+    const rowIndex = parseInt(rowIndexString, 10);
+    if (isNaN(rowIndex) || rowIndex < 0 || rowIndex >= flatDataWithSeparators.length) {
+      toast({ variant: "destructive", title: "Error", description: "Invalid transaction reference for deletion." });
+      return;
+    }
+    const transactionToDelete = flatDataWithSeparators[rowIndex];
+    if (transactionToDelete && transactionToDelete.id) {
+      // TODO: Add confirmation dialog?
+      deleteMutation.mutate(transactionToDelete.id);
+    } else {
+      toast({ variant: "destructive", title: "Error", description: "Could not find transaction ID for deletion." });
+    }
+  }, [deleteMutation, flatDataWithSeparators, toast]);
 
   const handleBulkDelete = useCallback(() => {
-    const idsToDelete = Object.keys(rowSelection).filter(key => rowSelection[key]);
-    if (idsToDelete.length === 0) return;
-    // TODO: Add confirmation dialog for bulk delete?
-    idsToDelete.forEach(id => deleteMutation.mutate(id));
-    // Selection is cleared in onSuccess
-  }, [rowSelection, deleteMutation]);
+    const selectedRowIndexStrings = Object.keys(rowSelection).filter(key => rowSelection[key]);
+    if (selectedRowIndexStrings.length === 0) {
+      toast({ title: "No rows selected", description: "Please select transactions to delete." });
+      return;
+    }
+
+    const idsToDelete: string[] = [];
+    selectedRowIndexStrings.forEach(indexString => {
+      const rowIndex = parseInt(indexString, 10);
+      if (!isNaN(rowIndex) && rowIndex >= 0 && rowIndex < flatDataWithSeparators.length) {
+        const transaction = flatDataWithSeparators[rowIndex];
+        if (transaction && transaction.id) {
+          idsToDelete.push(transaction.id);
+        }
+      }
+    });
+
+    if (idsToDelete.length === 0 && selectedRowIndexStrings.length > 0) {
+      // This case means selected indices were valid but no corresponding transaction IDs were found (should be rare if data is consistent)
+      toast({ variant: "destructive", title: "Error", description: "Could not derive transaction IDs for selected rows." });
+      return;
+    }
+    
+    if (idsToDelete.length > 0) {
+      // TODO: Add confirmation dialog for bulk delete?
+      idsToDelete.forEach(id => deleteMutation.mutate(id));
+      // Selection is cleared in onSuccess of deleteMutation (if it's still there)
+    }
+  }, [rowSelection, deleteMutation, flatDataWithSeparators, toast]);
 
   const handleSync = useCallback(() => {
     syncMutation.mutate();
