@@ -89,21 +89,22 @@ model categories {
 }
 
 model budgets {
-  id            String       @id @default(uuid())
-  name          String
-  plannedAmount Int // Changed from Decimal to Int, storing cents
-  actualAmount  Int // Changed from Decimal to Int, storing cents
-  period        BudgetPeriod
-  startDate     DateTime
-  endDate       DateTime
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  id            String   @id @default(uuid())
+  name          String? // Making name optional as it can be derived
+  plannedAmount Int // Storing cents
+  year          Int // Year the budget applies to
+  month         Int // Month the budget applies to (1-12)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   // Relations
   category   categories @relation(fields: [categoryId], references: [id])
   categoryId String
   user       users      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String
+
+  // Ensure only one budget entry per user, category, year, and month
+  @@unique([userId, categoryId, year, month])
 }
 
 enum AccountType {
@@ -124,11 +125,4 @@ enum CategoryType {
   INCOME
   EXPENSE
   BOTH
-}
-
-enum BudgetPeriod {
-  DAILY
-  WEEKLY
-  MONTHLY
-  YEARLY
 }

@@ -5,17 +5,8 @@ import { z } from "zod";
 import { getServerSession } from "next-auth";
 
 import { prisma } from "@/server/db";
-import { authOptions } from "@/server/auth/options";
+import { getAuthenticatedUserId } from "@/server/auth/utils";
 import { createAccountSchema, updateAccountSchema } from "@/lib/zod/account.schema";
-
-// Helper to get authenticated user ID
-async function getAuthenticatedUserId() {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    throw new Error("User not authenticated");
-  }
-  return session.user.id;
-}
 
 // --- GET ACCOUNTS ---
 export async function getAccounts() {

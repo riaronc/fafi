@@ -169,10 +169,8 @@ exports.Prisma.BudgetsScalarFieldEnum = {
   id: 'id',
   name: 'name',
   plannedAmount: 'plannedAmount',
-  actualAmount: 'actualAmount',
-  period: 'period',
-  startDate: 'startDate',
-  endDate: 'endDate',
+  year: 'year',
+  month: 'month',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   categoryId: 'categoryId',
@@ -206,13 +204,6 @@ exports.CategoryType = exports.$Enums.CategoryType = {
   INCOME: 'INCOME',
   EXPENSE: 'EXPENSE',
   BOTH: 'BOTH'
-};
-
-exports.BudgetPeriod = exports.$Enums.BudgetPeriod = {
-  DAILY: 'DAILY',
-  WEEKLY: 'WEEKLY',
-  MONTHLY: 'MONTHLY',
-  YEARLY: 'YEARLY'
 };
 
 exports.Prisma.ModelName = {
